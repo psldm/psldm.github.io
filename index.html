@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eva Moss</title>
+<meta name="description" content="Eva Moss. Independent researcher. Dodecahedral and icosahedral structure across cosmology, number theory and computation.">
+<style>
+  :root{
+    --void:#04060a;
+    --void-2:#070a10;
+    --solid:#1fbf86;
+    --solid-edge:#5ce8b4;
+    --ink:#e8eaf0;
+    --ink-dim:#79808f;
+    --ink-faint:#4b5160;
+    --bronze:#b98b4e;
+    --rule:rgba(120,200,170,.15);
+
+    --display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--void);
+    position:relative;
+    color:var(--ink);
+    font-family:var(--display);
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--bronze);text-decoration:none;border-bottom:1px solid rgba(185,139,78,.28)}
+  a:hover{border-bottom-color:var(--bronze)}
+  a:focus-visible{outline:1px solid var(--bronze);outline-offset:3px;border-radius:1px}
+
+  .sky,.veil{position:fixed;inset:0;pointer-events:none}
+  .sky{
+    z-index:0;
+    background-image:url("sky.jpg");
+    background-image:-webkit-image-set(url("sky.webp") type("image/webp"),url("sky.jpg") type("image/jpeg"));
+    background-image:image-set(url("sky.webp") type("image/webp"),url("sky.jpg") type("image/jpeg"));
+    background-size:cover;
+    background-position:center 44%;
+    opacity:.85;
+  }
+  .veil{
+    z-index:1;
+    background:
+      radial-gradient(58% 52% at 50% 40%,rgba(4,6,10,0) 0%,rgba(4,6,10,.55) 62%,rgba(4,6,10,.88) 100%),
+      linear-gradient(180deg,rgba(4,6,10,.30) 0%,rgba(4,6,10,.20) 42%,rgba(4,6,10,.93) 88%,var(--void) 100%);
+  }
+  .page{position:relative;z-index:2}
+
+  .wrap{max-width:44rem;margin:0 auto;padding:0 1.75rem}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+  }
+  .halo{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(30% 30% at 50% 44%,rgba(31,191,134,.20),rgba(4,6,10,0) 70%),
+      radial-gradient(34% 34% at 50% 44%,rgba(3,6,9,.78),rgba(3,6,9,0) 72%);
+    pointer-events:none;
+  }
+  .stage{
+    position:relative;
+    width:min(78vmin,32.5rem);
+    aspect-ratio:1;
+    display:block;
+    cursor:grab;
+    touch-action:pan-y;
+    -webkit-user-select:none;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .stage.dragging{cursor:grabbing}
+  .stage:focus-visible{outline:none}
+  .stage:focus-visible svg,
+  .stage:hover svg{filter:drop-shadow(0 0 26px rgba(31,191,134,.42))}
+  .stage svg{
+    width:100%;height:100%;display:block;overflow:visible;
+    filter:drop-shadow(0 0 18px rgba(31,191,134,.28));
+  }
+  .face{
+    fill:var(--solid);
+    stroke:var(--solid-edge);
+    stroke-width:.0055;
+    stroke-linejoin:round;
+    vector-effect:non-scaling-stroke;
+  }
+
+  .nameplate{
+    position:absolute;
+    left:0;right:0;
+    bottom:clamp(2.5rem,9vh,5.5rem);
+    text-align:center;
+    pointer-events:none;
+  }
+  .sig{
+    margin:0;
+    font-size:clamp(2.4rem,8.5vw,4.2rem);
+    font-weight:400;
+    letter-spacing:.06em;
+    line-height:1;
+    color:var(--ink);
+  }
+  .latin{
+    margin:.85rem 0 0;
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    text-indent:.42em;
+  }
+
+  .scroll-cue{
+    position:absolute;
+    left:50%;bottom:1.35rem;
+    transform:translateX(-50%);
+    font-family:var(--mono);
+    font-size:.62rem;
+    letter-spacing:.34em;
+    color:var(--ink-faint);
+    text-indent:.34em;
+  }
+
+  /* ---------- body ---------- */
+  section{padding:clamp(4.5rem,11vh,8rem) 0}
+  .thesis{border-top:1px solid var(--rule)}
+  .thesis p{
+    margin:0;
+    font-size:clamp(1.1rem,2.3vw,1.32rem);
+    line-height:1.72;
+    color:#cfd5e0;
+  }
+  .thesis p + p{margin-top:1.3rem;color:var(--ink-dim);font-size:1rem}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.66rem;
+    letter-spacing:.36em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    text-indent:.36em;
+    margin:0 0 2.4rem;
+  }
+
+  ol.works{list-style:none;margin:0;padding:0}
+  ol.works li{
+    padding:1.5rem 0;
+    border-top:1px solid var(--rule);
+    display:grid;
+    grid-template-columns:2.6rem 1fr;
+    gap:1rem;
+  }
+  ol.works li:last-child{border-bottom:1px solid var(--rule)}
+  .idx{
+    font-family:var(--mono);
+    font-size:.68rem;
+    color:var(--ink-faint);
+    padding-top:.42rem;
+    letter-spacing:.08em;
+  }
+  .title{display:block;font-size:1.06rem;line-height:1.45;color:var(--ink);
+         text-decoration:none;border:0}
+  a.title:hover{color:var(--bronze)}
+  .meta{
+    display:block;
+    margin-top:.42rem;
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.02em;
+    color:var(--ink-faint);
+  }
+
+  footer{
+    border-top:1px solid var(--rule);
+    padding:3.5rem 0 4.5rem;
+  }
+  .contact{margin:0;font-size:1.15rem}
+  .colophon{
+    margin:2.2rem 0 0;
+    font-family:var(--mono);
+    font-size:.68rem;
+    line-height:1.9;
+    color:var(--ink-faint);
+    letter-spacing:.02em;
+  }
+
+  @media (max-width:34rem){
+    ol.works li{grid-template-columns:1fr;gap:.1rem}
+    .idx{padding-top:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="sky"></div>
+<div class="veil"></div>
+
+<div class="page">
+<header class="hero">
+  <div class="halo"></div>
+
+  <div class="stage" id="stage" tabindex="0" aria-label="Dodecahedron. Drag, or use the arrow keys, to turn it.">
+    <svg id="dodsvg" viewBox="-1 -1 2 2" aria-label="Rotating regular dodecahedron" role="img"></svg>
+  </div>
+
+  <div class="nameplate">
+    <h1 class="sig">&#926;&#965;&#945;&nbsp;M&#963;&#962;&#962;</h1>
+    <p class="latin">Eva Moss</p>
+  </div>
+
+  <div class="scroll-cue">scroll</div>
+</header>
+
+<section class="thesis">
+  <div class="wrap">
+    <p>One object runs through all of it. The regular dodecahedron, its rotation group
+    A<sub>5</sub> of order 60, and the binary icosahedral group 2I of order 120.</p>
+    <p>The same structure surfaces in the topology of the cosmic microwave background,
+    in the factorization of base 60, in the exceptional Lie algebra E<sub>8</sub>, and in a
+    bronze artifact left behind by Roman surveyors. Each appearance is documented on its
+    own terms, without forcing a single theory over them.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Work</p>
+    <ol class="works">
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.20277861">The Icosahedral Cascade: A Survey of A<sub>5</sub> and 2I Across Mathematics and Physics</a>
+        <span class="meta">doi 10.5281/zenodo.20277861</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.20172207">The Roman Dodecahedron as a Sexagesimal Computing Device</a>
+        <span class="meta">doi 10.5281/zenodo.20172207</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.20135714">The Subgroup Ladder is the Chinese Remainder Theorem: Base 60 as the Canonical Coordinate of 2I</a>
+        <span class="meta">doi 10.5281/zenodo.20135714</span>
+      </span></li>
+
+      <!-- DOI to confirm: 19779670 (icosahedral factorization) vs 19779500/19779501 (prime lattice) -->
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.19779670">Base 60 and the Icosahedral Factorization of Coordinate Space</a>
+        <span class="meta">doi 10.5281/zenodo.19779670</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.19521677">Cosmicflows-4 and the Scale of Cosmic Topology: A Null Test for Dodecahedral Anisotropy in Local H<sub>0</sub></a>
+        <span class="meta">doi 10.5281/zenodo.19521677</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.19490216">From Dodecahedron to E<sub>8</sub>: A Dictionary between Cosmic Topology and Exceptional Geometry</a>
+        <span class="meta">doi 10.5281/zenodo.19490216</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.19026402">The Perfect Base of &#960;: Base 60 and the Icosahedral Factorization</a>
+        <span class="meta">doi 10.5281/zenodo.19026402</span>
+      </span></li>
+
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="eyebrow">Contact</p>
+    <p class="contact"><a href="mailto:eva@m0ss.io">eva@m0ss.io</a></p>
+    <p class="colophon">
+      Los Angeles<br>
+      Vertices, edges and faces on this page are computed from the exact coordinates of the regular dodecahedron, not drawn.<br>
+      Background: the galactic centre in near-infrared. NASA/JPL-Caltech/ESA/CXC/STScI, PIA12348.
+    </p>
+  </div>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Regular dodecahedron, circumradius 1, oriented so that a 5-fold axis is vertical.
+  // Verified: 20 vertices, 30 edges, 12 pentagonal faces, V - E + F = 2,
+  // all 60 face sides equal 2/phi/sqrt(3) = 0.713644179546, 3 faces per vertex.
+  var V = [
+    [0.463107,-0.794654,0.392500],[0.979504,0.187592,0.073349],
+    [-0.143955,-0.794654,-0.589747],[0.372442,0.187592,-0.908898],
+    [-0.372442,-0.187592,0.908898],[0.143955,0.794654,0.589747],
+    [-0.979504,-0.187592,-0.073349],[-0.463107,0.794654,-0.392500],
+    [-0.230182,-0.794654,0.561730],[0.749322,-0.187592,0.635079],
+    [0.516398,-0.794654,-0.319151],[0.605367,0.794654,0.045332],
+    [-0.232925,-0.187592,-0.954230],[0.835549,-0.187592,-0.516398],
+    [-0.605367,-0.794654,-0.045332],[0.232925,0.187592,0.954230],
+    [-0.835549,0.187592,0.516398],[0.230182,0.794654,-0.561730],
+    [-0.749322,0.187592,-0.635079],[-0.516398,0.794654,0.319151]
+  ];
+  var F = [
+    [7,19,5,11,17],[15,9,1,11,5],[19,16,4,15,5],[14,8,4,16,6],
+    [18,12,2,14,6],[7,18,6,16,19],[13,10,2,12,3],[17,11,1,13,3],
+    [7,17,3,12,18],[1,9,0,10,13],[2,10,0,8,14],[4,8,0,9,15]
+  ];
+
+  var TILT = -16 * Math.PI / 180;   // resting lean
+  var CAM  = 3.4;                   // camera distance in circumradii
+  var FOC  = 3.0;                   // focal scale; viewBox sized to the measured extent
+  var PERIOD = 90000;               // ms per ambient turn
+  var PITCH_LIMIT = 80 * Math.PI / 180;
+  var K_YAW = 0.0100;               // rad per px dragged
+  var K_PITCH = 0.0075;
+  var V_CAP = 0.0060;               // rad per ms, about one turn per second
+  var DECAY = 0.055;                // fraction of flick velocity left after 1 s
+
+  var stage = document.getElementById("stage");
+  var svg = document.getElementById("dodsvg");
+  var NS = "http://www.w3.org/2000/svg";
+  var poly = [];
+  for (var i = 0; i < F.length; i++) {
+    var p = document.createElementNS(NS, "polygon");
+    p.setAttribute("class", "face");
+    svg.appendChild(p);
+    poly.push(p);
+  }
+
+  var order = new Array(F.length);
+  var px = new Array(V.length), py = new Array(V.length), pz = new Array(V.length);
+
+  function frame(yaw, pitch) {
+    var c = Math.cos(yaw), s = Math.sin(yaw);
+    var ct = Math.cos(pitch), st = Math.sin(pitch);
+
+    for (var i = 0; i < V.length; i++) {
+      var v = V[i];
+      var x = c * v[0] + s * v[2];
+      var y = v[1];
+      var z = -s * v[0] + c * v[2];
+      var y2 = ct * y - st * z;
+      var z2 = st * y + ct * z;
+      var k = FOC / (CAM - z2);
+      px[i] = x * k; py[i] = -y2 * k; pz[i] = z2;
+    }
+
+    for (var f = 0; f < F.length; f++) {
+      var a = F[f], zc = 0;
+      for (var j = 0; j < 5; j++) zc += pz[a[j]];
+      order[f] = { f: f, z: zc / 5 };
+    }
+    order.sort(function (m, n) { return m.z - n.z; });
+
+    for (var o = 0; o < order.length; o++) {
+      var fi = order[o].f, a2 = F[fi], pts = "";
+      for (var q = 0; q < 5; q++) pts += px[a2[q]].toFixed(4) + "," + py[a2[q]].toFixed(4) + " ";
+
+      // signed area of the projected pentagon: negative means the face points at us
+      var area = 0;
+      for (var q2 = 0; q2 < 5; q2++) {
+        var A = a2[q2], B = a2[(q2 + 1) % 5];
+        area += px[A] * py[B] - px[B] * py[A];
+      }
+      var front = area < 0;
+      var depth = (order[o].z + 1) / 2;          // 0 back, 1 front
+
+      var el = poly[fi];
+      el.setAttribute("points", pts);
+      el.setAttribute("fill-opacity", (front ? 0.13 + 0.13 * depth : 0.06).toFixed(4));
+      el.setAttribute("stroke-opacity", (front ? 0.52 + 0.44 * depth : 0.26).toFixed(4));
+      svg.appendChild(el);
+    }
+  }
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var ambient = reduce.matches ? 0 : (2 * Math.PI) / PERIOD;   // rad per ms
+
+  var yaw = 0, pitch = TILT;
+  var velYaw = 0, velPitch = 0;
+  var dragging = false, pointerId = null, freeY = false;
+  var lastX = 0, lastY = 0, lastMoveT = 0;
+  var raf = 0, last = null;
+
+  function clampPitch() {
+    if (pitch >  PITCH_LIMIT) pitch =  PITCH_LIMIT;
+    if (pitch < -PITCH_LIMIT) pitch = -PITCH_LIMIT;
+  }
+
+  function loop(t) {
+    if (last === null) last = t;
+    var dt = Math.min(t - last, 100);
+    last = t;
+
+    if (!dragging) {
+      yaw   += (ambient + velYaw) * dt;
+      pitch += velPitch * dt;
+      clampPitch();
+      var d = Math.pow(DECAY, dt / 1000);
+      velYaw *= d; velPitch *= d;
+      if (Math.abs(velYaw) < 1e-7) velYaw = 0;
+      if (Math.abs(velPitch) < 1e-7) velPitch = 0;
+    }
+
+    frame(yaw, pitch);
+
+    if (ambient === 0 && !dragging && velYaw === 0 && velPitch === 0) { raf = 0; last = null; return; }
+    raf = requestAnimationFrame(loop);
+  }
+
+  function wake() {
+    if (!raf) { last = null; raf = requestAnimationFrame(loop); }
+  }
+
+  function cap(v) { return v > V_CAP ? V_CAP : (v < -V_CAP ? -V_CAP : v); }
+
+  stage.addEventListener("pointerdown", function (e) {
+    if (pointerId !== null) return;
+    pointerId = e.pointerId;
+    dragging = true;
+    freeY = (e.pointerType === "mouse" || e.pointerType === "pen");
+    velYaw = 0; velPitch = 0;
+    lastX = e.clientX; lastY = e.clientY; lastMoveT = e.timeStamp;
+    stage.classList.add("dragging");
+    stage.setPointerCapture(e.pointerId);
+    wake();
+  });
+
+  stage.addEventListener("pointermove", function (e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    var dx = e.clientX - lastX, dy = e.clientY - lastY;
+    var dt = e.timeStamp - lastMoveT;
+    lastX = e.clientX; lastY = e.clientY; lastMoveT = e.timeStamp;
+
+    var dYaw = dx * K_YAW;
+    yaw += dYaw;
+    var dPitch = 0;
+    if (freeY) { dPitch = dy * K_PITCH; pitch += dPitch; clampPitch(); }
+
+    if (dt > 0) { velYaw = cap(dYaw / dt); velPitch = cap(dPitch / dt); }
+    frame(yaw, pitch);
+  });
+
+  function release(e) {
+    if (e.pointerId !== pointerId) return;
+    dragging = false; pointerId = null;
+    stage.classList.remove("dragging");
+    if (e.timeStamp - lastMoveT > 90) { velYaw = 0; velPitch = 0; }  // held still, do not fling
+    wake();
+  }
+  stage.addEventListener("pointerup", release);
+  stage.addEventListener("pointercancel", release);
+
+  stage.addEventListener("keydown", function (e) {
+    var step = 6 * Math.PI / 180;
+    if (e.key === "ArrowLeft")       { yaw -= step; }
+    else if (e.key === "ArrowRight") { yaw += step; }
+    else if (e.key === "ArrowUp")    { pitch -= step; clampPitch(); }
+    else if (e.key === "ArrowDown")  { pitch += step; clampPitch(); }
+    else return;
+    e.preventDefault();
+    frame(yaw, pitch);
+    wake();
+  });
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; last = null; }
+    else wake();
+  });
+
+  frame(yaw, pitch);
+  if (ambient !== 0) wake();
+})();
+</script>
+
+</body>
+</html>
