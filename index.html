@@ -64,17 +64,22 @@
     display:grid;
     place-items:center;
     overflow:hidden;
+    --size:min(78vmin,32.5rem);
+    /* centred, the solid would sit (100svh - size)/2 below the top, plus the stage's own margin
+       of 0.0384 size around the globe; lift it by a third of that */
+    --lift:calc(((100svh - var(--size)) / 2 + var(--size) * 0.0384) / 3);
   }
   .halo{
     position:absolute;inset:0;
     background:
-      radial-gradient(30% 30% at 50% 44%,rgba(217,178,92,.20),rgba(4,6,10,0) 70%),
-      radial-gradient(34% 34% at 50% 44%,rgba(3,6,9,.78),rgba(3,6,9,0) 72%);
+      radial-gradient(30% 30% at 50% calc(44% - var(--lift)),rgba(217,178,92,.20),rgba(4,6,10,0) 70%),
+      radial-gradient(34% 34% at 50% calc(44% - var(--lift)),rgba(3,6,9,.78),rgba(3,6,9,0) 72%);
     pointer-events:none;
   }
   .stage{
     position:relative;
-    width:min(78vmin,32.5rem);
+    top:calc(-1 * var(--lift));
+    width:var(--size);
     aspect-ratio:1;
     display:block;
     cursor:grab;
