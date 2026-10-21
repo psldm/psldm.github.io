@@ -58,19 +58,6 @@ DOI**, which always resolves to the latest version of a record, so a new version
 needs no change here. When the Theory of Temporal Spheres is finished, change its
 `in progress` label.
 
-## Previewing and publishing
-
-Preview locally from this folder:
-
-```bash
-python3 -m http.server 8765
-```
-
-then open <http://localhost:8765>.
-
-The site is served by GitHub Pages from the `main` branch. Pushing to `main` publishes it
-to m0ss.io within a minute or two.
-
 ## Contact
 
 [eva@m0ss.io](mailto:eva@m0ss.io) · ORCID [0009-0002-9793-9139](https://orcid.org/0009-0002-9793-9139)
