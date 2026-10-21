@@ -439,6 +439,8 @@
   var KEY_PUSH = 0.0008;            // rad per ms an arrow key adds
   var RIM = 0.14;                   // gold rim width, as a fraction of the way from edge to face centre
   var RIM_STEPS = 8;                // nested bands that build the rim's falloff
+  var SEG = 5;                      // pieces each edge and rim ring is cut into, so the faces can curve
+  var ROUND_SPEED = 12;             // rad per s at which the faces have bulged all the way out to a sphere
   var EDGE_ALPHA = 0.9;             // gold at the very edge
   var WALL = 0.07;                  // gold across the open centre of each face
   var SHEEN = 0.12;                 // extra gold on a face turned toward a light
@@ -487,33 +489,47 @@
     return [a[0] / n, a[1] / n, a[2] / n];
   }
 
-  // Inset copies of every face, scaled toward the face centre in model space,
-  // so each rim band stays parallel to its edges in any orientation.
-  // P holds V, then the inset vertices and face centres; RV[f][k] indexes ring k of face f,
-  // FCI[f] the centre of face f.
-  var P = V.slice(), RV = [], FCI = [];
+  // Every face as a mesh that can bulge: its outline, and inset copies of it scaled toward the face
+  // centre in model space for the rim, so each rim band stays parallel to its edges in any
+  // orientation. Each side is cut into SEG pieces, so the faces can curve.
+  // P holds V, then the outline points (up to OUT_END, all the motion-blur copies need), then the
+  // face centres and rim rings; OUT[f] indexes the outline of face f, RV[f][k] its ring k, FCI[f] its centre.
+  var P = V.slice(), OUT = [], RV = [], FCI = [];
   for (var f0 = 0; f0 < F.length; f0++) {
+    var out = [];
+    for (var i0 = 0; i0 < 5; i0++) {
+      var a0 = V[F[f0][i0]], b0 = V[F[f0][(i0 + 1) % 5]];
+      out.push(F[f0][i0]);
+      for (var s0 = 1; s0 < SEG; s0++) { out.push(P.length); P.push(lerp3(a0, b0, s0 / SEG)); }
+    }
+    OUT.push(out);
+  }
+  var OUT_END = P.length;
+  for (var f1 = 0; f1 < F.length; f1++) {
     var cen = [0, 0, 0];
-    for (var j0 = 0; j0 < 5; j0++) for (var d0 = 0; d0 < 3; d0++) cen[d0] += V[F[f0][j0]][d0] / 5;
+    for (var j0 = 0; j0 < 5; j0++) for (var d0 = 0; d0 < 3; d0++) cen[d0] += V[F[f1][j0]][d0] / 5;
     FCI.push(P.length);
     P.push(cen);
     RV.push([]);
     for (var k0 = 1; k0 <= RIM_STEPS; k0++) {
-      var sc = 1 - RIM * k0 / RIM_STEPS, ring = [];
-      for (var j1 = 0; j1 < 5; j1++) {
-        var w = V[F[f0][j1]];
-        ring.push(P.length);
-        P.push([cen[0] + sc * (w[0] - cen[0]), cen[1] + sc * (w[1] - cen[1]), cen[2] + sc * (w[2] - cen[2])]);
+      var sc = 1 - RIM * k0 / RIM_STEPS, corner = [], ring = [];
+      for (var j1 = 0; j1 < 5; j1++) corner.push(lerp3(cen, V[F[f1][j1]], sc));
+      for (var j2 = 0; j2 < 5; j2++) {
+        for (var s1 = 0; s1 < SEG; s1++) { ring.push(P.length); P.push(lerp3(corner[j2], corner[(j2 + 1) % 5], s1 / SEG)); }
       }
-      RV[f0].push(ring);
+      RV[f1].push(ring);
     }
   }
+  // distance of every point from the centre, for the bulge
+  var NORM = P.map(function (p) { return Math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]); });
+
+  function lerp3(a, b, t) { return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]), a[2] + t * (b[2] - a[2])]; }
 
   // Band k covers the face from its edge to ring k. Opacities are solved so the stacked
   // bands fall from EDGE_ALPHA at the edge to nothing at the inner side of the rim, as (1 - t)^2.
   function rimTarget(j) { var t = j / RIM_STEPS; return EDGE_ALPHA * (1 - t) * (1 - t); }
   var rimAlpha = [];
-  for (var j2 = 0; j2 < RIM_STEPS; j2++) rimAlpha.push(1 - (1 - rimTarget(j2)) / (1 - rimTarget(j2 + 1)));
+  for (var j3 = 0; j3 < RIM_STEPS; j3++) rimAlpha.push(1 - (1 - rimTarget(j3)) / (1 - rimTarget(j3 + 1)));
 
   var c0 = P[FCI[0]], v0 = V[F[0][0]];
   var FACE_R = Math.sqrt(Math.pow(v0[0] - c0[0], 2) + Math.pow(v0[1] - c0[1], 2) + Math.pow(v0[2] - c0[2], 2));
@@ -592,12 +608,17 @@
   var cx = new Array(P.length), cy = new Array(P.length);   // camera space; pz is its z
 
   var lastC = null;                 // camera matrix of the latest frame
+  var bulge = 0;                    // 0 flat faces, 1 every point pushed out onto the circumsphere
 
   function frame() {
     var span = Math.min(whirl() * EXPOSURE, SECTOR), s = span / SECTOR;
     var wSolid = 1 - smooth(0.05, 0.45, s);
     var wGhost = smooth(0, 0.15, s) * (1 - smooth(0.55, 0.95, s));
     var wGlobe = smooth(0.35, 0.9, s);
+
+    // the faces bulge outward as it spins, centrifugally, so with the square of the speed
+    var x = whirl() * 1000 / ROUND_SPEED;
+    bulge = smooth(0, 1, x * x);
 
     lastC = camera(orient);
     place(lastC, P.length);
@@ -647,13 +668,14 @@
     return m;
   }
 
-  // Turn the first n points of P by camera matrix C and project them.
+  // Push the first n points of P out by the bulge, turn them by camera matrix C and project them.
+  // The vertices already lie on the circumsphere and stay put; a face's middle moves the most.
   function place(C, n) {
     for (var i = 0; i < n; i++) {
-      var v = P[i];
-      var x = C[0] * v[0] + C[1] * v[1] + C[2] * v[2];
-      var y = C[3] * v[0] + C[4] * v[1] + C[5] * v[2];
-      var z = C[6] * v[0] + C[7] * v[1] + C[8] * v[2];
+      var v = P[i], g = 1 - bulge + bulge / NORM[i];
+      var x = (C[0] * v[0] + C[1] * v[1] + C[2] * v[2]) * g;
+      var y = (C[3] * v[0] + C[4] * v[1] + C[5] * v[2]) * g;
+      var z = (C[6] * v[0] + C[7] * v[1] + C[8] * v[2]) * g;
       var k = FOC / (CAM - z);
       cx[i] = x; cy[i] = y; pz[i] = z;
       px[i] = x * k; py[i] = -y * k;
@@ -669,8 +691,8 @@
     order.sort(function (m, n) { return m.z - n.z; });
 
     for (var o = 0; o < order.length; o++) {
-      var fi = order[o].f, a2 = F[fi], pts = "";
-      for (var q = 0; q < 5; q++) pts += px[a2[q]].toFixed(4) + "," + py[a2[q]].toFixed(4) + " ";
+      var fi = order[o].f, a2 = F[fi], ol = OUT[fi], pts = "";
+      for (var q = 0; q < ol.length; q++) pts += px[ol[q]].toFixed(4) + "," + py[ol[q]].toFixed(4) + " ";
 
       // signed area of the projected pentagon: negative means the face points at us
       var area = 0;
@@ -685,7 +707,7 @@
       var outer = "M" + pts + "Z";
       for (var k2 = 0; k2 < RIM_STEPS; k2++) {
         var rv = RV[fi][k2], inner = "M";
-        for (var q3 = 0; q3 < 5; q3++) inner += px[rv[q3]].toFixed(4) + "," + py[rv[q3]].toFixed(4) + " ";
+        for (var q3 = 0; q3 < rv.length; q3++) inner += px[rv[q3]].toFixed(4) + "," + py[rv[q3]].toFixed(4) + " ";
         rims[fi][k2].setAttribute("d", outer + inner + "Z");
       }
       clip[fi].setAttribute("points", pts);
@@ -730,14 +752,14 @@
     var reach = span / whirl() / 1000, ow = rot(orient, omega);   // s the exposure reaches back; omega in the world
     for (var gi = 0; gi < GHOSTS; gi++) {
       var back = -reach * (gi + 1) / GHOSTS;
-      place(camera(qmul(qturn([ow[0] * back, ow[1] * back, ow[2] * back]), orient)), V.length);
+      place(camera(qmul(qturn([ow[0] * back, ow[1] * back, ow[2] * back]), orient)), OUT_END);
       for (var f = 0; f < F.length; f++) {
-        var a = F[f], pts = "", area = 0;
+        var a = F[f], ol = OUT[f], pts = "", area = 0;
         for (var q = 0; q < 5; q++) {
           var A = a[q], B = a[(q + 1) % 5];
-          pts += px[A].toFixed(4) + "," + py[A].toFixed(4) + " ";
           area += px[A] * py[B] - px[B] * py[A];
         }
+        for (var q1 = 0; q1 < ol.length; q1++) pts += px[ol[q1]].toFixed(4) + "," + py[ol[q1]].toFixed(4) + " ";
         var gp = ghost[gi][f], k = area < 0 ? 1 : 0.35;
         gp.setAttribute("points", pts);
         gp.setAttribute("fill-opacity", (WALL * k).toFixed(4));
