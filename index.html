@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Eva Moss</title>
-<meta name="description" content="Eva Moss. Independent researcher. Dodecahedral and icosahedral structure across cosmology, number theory and computation.">
+<meta name="description" content="Eva Moss, independent researcher. The Theory of Temporal Spheres and dodecahedral structure across cosmology, physics, number theory and biology.">
 <style>
   :root{
     --void:#04060a;
     --void-2:#070a10;
-    --solid:#1fbf86;
-    --solid-edge:#5ce8b4;
+    --solid:#d9b25c;
+    --solid-edge:#f3d68c;
     --ink:#e8eaf0;
     --ink-dim:#79808f;
     --ink-faint:#4b5160;
@@ -68,7 +68,7 @@
   .halo{
     position:absolute;inset:0;
     background:
-      radial-gradient(30% 30% at 50% 44%,rgba(31,191,134,.20),rgba(4,6,10,0) 70%),
+      radial-gradient(30% 30% at 50% 44%,rgba(217,178,92,.20),rgba(4,6,10,0) 70%),
       radial-gradient(34% 34% at 50% 44%,rgba(3,6,9,.78),rgba(3,6,9,0) 72%);
     pointer-events:none;
   }
@@ -86,18 +86,23 @@
   .stage.dragging{cursor:grabbing}
   .stage:focus-visible{outline:none}
   .stage:focus-visible svg,
-  .stage:hover svg{filter:drop-shadow(0 0 26px rgba(31,191,134,.42))}
+  .stage:hover svg{filter:drop-shadow(0 0 26px rgba(217,178,92,.42))}
   .stage svg{
     width:100%;height:100%;display:block;overflow:visible;
-    filter:drop-shadow(0 0 18px rgba(31,191,134,.28));
+    filter:drop-shadow(0 0 18px rgba(217,178,92,.28));
   }
-  .face{
+  .face,.ghost{
     fill:var(--solid);
     stroke:var(--solid-edge);
-    stroke-width:.0055;
+    stroke-width:1.2;
     stroke-linejoin:round;
     vector-effect:non-scaling-stroke;
   }
+  .face{stroke-opacity:.9}
+  .rim{fill:var(--solid);fill-rule:evenodd}
+  .glint{fill:url(#glint)}
+  .globe-body{fill:url(#globeFill)}
+  .whip{fill:none;stroke:var(--solid-edge);stroke-width:1.1;stroke-linecap:round;vector-effect:non-scaling-stroke}
 
   .nameplate{
     position:absolute;
@@ -134,6 +139,18 @@
     color:var(--ink-faint);
     text-indent:.34em;
   }
+  .sound{
+    position:absolute;
+    right:1.6rem;bottom:1.05rem;
+    padding:.3rem .2rem;
+    background:none;border:0;cursor:pointer;
+    font-family:var(--mono);
+    font-size:.62rem;
+    letter-spacing:.34em;
+    color:var(--ink-faint);
+  }
+  .sound:hover,.sound[aria-pressed="true"]{color:var(--bronze)}
+  .sound:focus-visible{outline:1px solid var(--bronze);outline-offset:3px;border-radius:1px}
 
   /* ---------- body ---------- */
   section{padding:clamp(4.5rem,11vh,8rem) 0}
@@ -188,7 +205,11 @@
     border-top:1px solid var(--rule);
     padding:3.5rem 0 4.5rem;
   }
+  .about{margin:0 0 3.2rem}
+  .about p{margin:0;font-size:1.02rem;line-height:1.72;color:#cfd5e0}
+  .about p + p{margin-top:1rem;font-size:.95rem;color:var(--ink-dim)}
   .contact{margin:0;font-size:1.15rem}
+  .ids{margin:.6rem 0 0;font-family:var(--mono);font-size:.72rem;letter-spacing:.02em}
   .colophon{
     margin:2.2rem 0 0;
     font-family:var(--mono);
@@ -214,7 +235,25 @@
   <div class="halo"></div>
 
   <div class="stage" id="stage" tabindex="0" aria-label="Dodecahedron. Drag, or use the arrow keys, to turn it.">
-    <svg id="dodsvg" viewBox="-1 -1 2 2" aria-label="Rotating regular dodecahedron" role="img"></svg>
+    <svg id="dodsvg" viewBox="-1 -1 2 2" aria-label="Rotating regular dodecahedron" role="img">
+      <defs>
+        <!-- a sun glint: warm white core fading through gold -->
+        <radialGradient id="glint">
+          <stop offset="0" stop-color="#fffaf0" stop-opacity="1"/>
+          <stop offset=".3" stop-color="#fbe7b0" stop-opacity=".75"/>
+          <stop offset=".65" stop-color="#d9b25c" stop-opacity=".2"/>
+          <stop offset="1" stop-color="#d9b25c" stop-opacity="0"/>
+        </radialGradient>
+        <!-- the spun solid: clear glass, gold toward its rim -->
+        <radialGradient id="globeFill">
+          <stop offset="0" stop-color="#d9b25c" stop-opacity=".04"/>
+          <stop offset=".6" stop-color="#d9b25c" stop-opacity=".08"/>
+          <stop offset=".88" stop-color="#d9b25c" stop-opacity=".24"/>
+          <stop offset=".97" stop-color="#f3d68c" stop-opacity=".55"/>
+          <stop offset="1" stop-color="#f3d68c" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+    </svg>
   </div>
 
   <div class="nameplate">
@@ -223,16 +262,22 @@
   </div>
 
   <div class="scroll-cue">scroll</div>
+  <button class="sound" id="sound" type="button" aria-pressed="false">sound off</button>
 </header>
 
 <section class="thesis">
   <div class="wrap">
     <p>One object runs through all of it. The regular dodecahedron, its rotation group
-    A<sub>5</sub> of order 60, and the binary icosahedral group 2I of order 120.</p>
-    <p>The same structure surfaces in the topology of the cosmic microwave background,
-    in the factorization of base 60, in the exceptional Lie algebra E<sub>8</sub>, and in a
-    bronze artifact left behind by Roman surveyors. Each appearance is documented on its
-    own terms, without forcing a single theory over them.</p>
+    A<sub>5</sub> of order 60, and the binary icosahedral group 2I of order 120. At the
+    largest scale, the Theory of Temporal Spheres takes it as the shape of space: a finite
+    universe of radius R = c&#964;, tiled as Poincar&#233; dodecahedral space.</p>
+    <p>From there the same structure is followed down. Through the factorial ladder
+    (n+1)!/2, which runs 1, 3, 12, 60, 360 and underlies base 60; through spacetime
+    treated as a continuous medium; through superconducting order in icosahedral
+    quasicrystals and a layered reading of the genetic code; and through smaller pieces on
+    the arithmetic of base 60, the golden ratio in planetary systems, cosmic topology,
+    E<sub>8</sub>, and a bronze artifact left behind by Roman surveyors. Each is written so
+    that its claims can be checked.</p>
   </div>
 </section>
 
@@ -240,15 +285,51 @@
   <div class="wrap">
     <p class="eyebrow">Work</p>
     <ol class="works">
+      <!-- Every link is a Zenodo concept DOI, which always resolves to the latest version. -->
 
       <li><span class="idx">2026</span><span>
-        <a class="title" href="https://doi.org/10.5281/zenodo.20277861">The Icosahedral Cascade: A Survey of A<sub>5</sub> and 2I Across Mathematics and Physics</a>
-        <span class="meta">doi 10.5281/zenodo.20277861</span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.17671886">The Theory of Temporal Spheres</a>
+        <span class="meta">in progress &#183; doi 10.5281/zenodo.17671886</span>
       </span></li>
 
       <li><span class="idx">2026</span><span>
-        <a class="title" href="https://doi.org/10.5281/zenodo.20172207">The Roman Dodecahedron as a Sexagesimal Computing Device</a>
-        <span class="meta">doi 10.5281/zenodo.20172207</span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.18012673">The Theory of Temporal Groups</a>
+        <span class="meta">doi 10.5281/zenodo.18012673</span>
+      </span></li>
+
+      <li><span class="idx">2025</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.18120252">DOMINION: Dodecahedral Origins of the Sexagesimal System</a>
+        <span class="meta">doi 10.5281/zenodo.18120252</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.22335716">Beyond the 32: Superconducting Pairing Channels of the Icosahedral Group &#8212; Classification, Approximant Branching, and Ginzburg&#8211;Landau Theory for Quasicrystals</a>
+        <span class="meta">doi 10.5281/zenodo.22335716 &#183; <a href="https://doi.org/10.5281/zenodo.22335534">code</a></span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.18243694">The Tri-Layer Genetic Code: The Fundamental Equation of Biological Information</a>
+        <span class="meta">doi 10.5281/zenodo.18243694</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.18086671">The Omni Current Theory: Spacetime as Emergent Hydrodynamics</a>
+        <span class="meta">doi 10.5281/zenodo.18086671</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.20319658">The Golden Ratio in Planetary Dynamics: From Kepler Exoplanets to Dodecahedral Topology</a>
+        <span class="meta">doi 10.5281/zenodo.20319658</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.20277860">The Icosahedral Cascade: A Survey of A<sub>5</sub> and 2I Across Mathematics and Physics</a>
+        <span class="meta">doi 10.5281/zenodo.20277860</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.20172206">The Roman Dodecahedron as a Sexagesimal Computing Device: Group-Theoretic Structure, Physical Encoding, and Computational Signatures in Kepler and Ptolemy</a>
+        <span class="meta">with John Pirs &#183; doi 10.5281/zenodo.20172206</span>
       </span></li>
 
       <li><span class="idx">2026</span><span>
@@ -256,10 +337,14 @@
         <span class="meta">doi 10.5281/zenodo.20135714</span>
       </span></li>
 
-      <!-- DOI to confirm: 19779670 (icosahedral factorization) vs 19779500/19779501 (prime lattice) -->
       <li><span class="idx">2026</span><span>
         <a class="title" href="https://doi.org/10.5281/zenodo.19779670">Base 60 and the Icosahedral Factorization of Coordinate Space</a>
         <span class="meta">doi 10.5281/zenodo.19779670</span>
+      </span></li>
+
+      <li><span class="idx">2026</span><span>
+        <a class="title" href="https://doi.org/10.5281/zenodo.19779500">Base-60 as a Three-Dimensional Prime Lattice: A Numerical Foundation for Exact Finite Division by the Primes Two, Three, and Five</a>
+        <span class="meta">doi 10.5281/zenodo.19779500</span>
       </span></li>
 
       <li><span class="idx">2026</span><span>
@@ -273,7 +358,7 @@
       </span></li>
 
       <li><span class="idx">2026</span><span>
-        <a class="title" href="https://doi.org/10.5281/zenodo.19026402">The Perfect Base of &#960;: Base 60 and the Icosahedral Factorization</a>
+        <a class="title" href="https://doi.org/10.5281/zenodo.19026402">The Perfect Base of &#960;: A Structural Zero in the Dodecahedral Arithmetic of A<sub>5</sub></a>
         <span class="meta">doi 10.5281/zenodo.19026402</span>
       </span></li>
 
@@ -283,10 +368,26 @@
 
 <footer>
   <div class="wrap">
+    <p class="eyebrow">About</p>
+    <div class="about">
+      <p>Fundamental science is my calling, and I have given my life to it: to the old question
+      of what the world is made of, and what holds it together.</p>
+      <p>I came to science from information technology, and it still shapes how I work: I treat
+      a theory as a system, something that has to run before it can be trusted.</p>
+      <p>The questions I follow do not sit inside one discipline, and working outside them
+      leaves room to follow a single structure wherever it turns up: the dodecahedron and its
+      symmetry groups, from the shape of space to base 60, quasicrystals and the genetic code.
+      Lately I also look for shared structure in how information is organized across very
+      different systems: DNA, neural rhythms, language.</p>
+      <p>Everything is published openly on Zenodo and revised in place as it develops, with
+      code where there is any.</p>
+    </div>
+
     <p class="eyebrow">Contact</p>
     <p class="contact"><a href="mailto:eva@m0ss.io">eva@m0ss.io</a></p>
+    <p class="ids"><a href="https://orcid.org/0009-0002-9793-9139">ORCID 0009-0002-9793-9139</a></p>
     <p class="colophon">
-      Los Angeles<br>
+      Los Angeles, USA<br>
       Vertices, edges and faces on this page are computed from the exact coordinates of the regular dodecahedron, not drawn.<br>
       Background: the galactic centre in near-infrared. NASA/JPL-Caltech/ESA/CXC/STScI, PIA12348.
     </p>
@@ -320,44 +421,241 @@
   ];
 
   var TILT = -16 * Math.PI / 180;   // resting lean
+  var ROLL = 8 * Math.PI / 180;     // sideways lean of the spin axis, so faces cross on a diagonal
   var CAM  = 3.4;                   // camera distance in circumradii
   var FOC  = 3.0;                   // focal scale; viewBox sized to the measured extent
   var PERIOD = 90000;               // ms per ambient turn
-  var PITCH_LIMIT = 80 * Math.PI / 180;
-  var K_YAW = 0.0100;               // rad per px dragged
+  var K_YAW = 0.0100;               // rad per px the hand moves
   var K_PITCH = 0.0075;
-  var V_CAP = 0.0060;               // rad per ms, about one turn per second
-  var DECAY = 0.055;                // fraction of flick velocity left after 1 s
+  // A hand drags the solid through friction and slips, so it takes its time to pick up the hand's
+  // motion, or to be stopped by it; let go, it coasts on against the air.
+  var GRIP = 700;                   // ms for the friction to bring it most of the way to the hand's motion
+  var HAND_CAP = 0.03;              // rad per ms, the fastest a hand can turn it, about 5 turns a second
+  var KEY_PUSH = 0.0008;            // rad per ms an arrow key adds
+  var RIM = 0.14;                   // gold rim width, as a fraction of the way from edge to face centre
+  var RIM_STEPS = 8;                // nested bands that build the rim's falloff
+  var EDGE_ALPHA = 0.9;             // gold at the very edge
+  var WALL = 0.07;                  // gold across the open centre of each face
+  var SHEEN = 0.12;                 // extra gold on a face turned toward a light
+  var GLINT_ALPHA = 0.9;            // brightness of a sun glint
+  var GLINT_R = 0.22;               // glint radius, in circumradii
+
+  // The spin cycle: calm turning, spin up and tumble until the solid smears into a globe, hold, brake, repeat.
+  var CALM = 14000, RISE = 40000, HOLD = 16000, FALL = 7000;  // ms
+  var BREATH = 5;                          // s per breath of the spun globe; its sound breathes on the same clock
+  var BREATH_GLOW = 0.06;                  // how much the globe brightens on an in-breath
+  var TREMOR_SIZE = 0.001;                 // how far the globe shudders, in time with the sound's flutter
+  var SPIN_MAX = 2 * Math.PI * 8 / 1000;   // rad per ms at full spin, 8 turns a second
+  // The solid is a rigid body turning about its centre. A regular dodecahedron of even density has
+  // equal moments about every axis and could only ever spin steadily; this one carries its mass
+  // unevenly, a weight below the centre and three unequal moments, so it can truly tumble. Spun
+  // about its middle axis it is unstable (the tennis-racket effect) and flips over and over,
+  // chaotically, the more often the faster it goes; the weight sways it upright once it slows.
+  var INERTIA = [0.65, 1, 1.5];            // principal moments about the body's x, y (its 5-fold axis) and z
+  var SWAY = 0.6;                          // rad per s: how briskly the weight swings it upright when tipped
+  var DRAG = 0.35;                         // per s: the air's drag on its turning
+  var DRIVE = 0.8, DRIVE_CALM = 6;         // s: how firmly the spin cycle's vortex holds its pace, spinning and at rest
+  var KICK = 0.1;                          // rad per s of chance nudge at each spin-up; chaos does the rest
+  var EXPOSURE = 1000 / 30;                // ms of motion smeared into each frame, like a camera shutter
+  var SECTOR = 2 * Math.PI / 5;            // about its 5-fold axis the solid repeats every fifth of a turn
+  var GHOSTS = 6;                          // trailing copies that draw the motion blur
+  var GLOBE_R = 1;                         // every vertex lies on the circumsphere, so the globe is that sphere
+  // Signs of speed on the globe: trains of glints racing through a highlight, and arcs whipped round the axis.
+  var TRAINS = 4, TRAIN_DOTS = 7, TRAIN_RATE = 5;   // most at once, glints in each, new ones per second at full spin
+  var TRAIN_LIFE = 300, TRAIN_STEP = 0.13;          // ms, rad between glints
+  var DOT_R = 0.045;                                // glint radius, in circumradii
+  var WHIPS = 6, WHIP_RATE = 12, WHIP_LIFE = 140;   // most at once, new ones per second at full spin, ms
+
+  // Two lights fixed to the viewer, out of frame behind them; d points toward the source.
+  // Directions were picked by simulating a full turn: about 15 glints per revolution.
+  var LIGHTS = [
+    { d: unit([0.17, 0.97, 0.17]), i: 1.0 },    // sun, overhead
+    { d: unit([0.81, -0.30, 0.50]), i: 0.6 }    // bounce, low right
+  ];
+  for (var l0 = 0; l0 < LIGHTS.length; l0++) {
+    var ld = LIGHTS[l0].d;
+    LIGHTS[l0].h = unit([ld[0], ld[1], ld[2] + 1]);   // halfway between light and eye
+  }
+
+  function unit(a) {
+    var n = Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+    return [a[0] / n, a[1] / n, a[2] / n];
+  }
+
+  // Inset copies of every face, scaled toward the face centre in model space,
+  // so each rim band stays parallel to its edges in any orientation.
+  // P holds V, then the inset vertices and face centres; RV[f][k] indexes ring k of face f,
+  // FCI[f] the centre of face f.
+  var P = V.slice(), RV = [], FCI = [];
+  for (var f0 = 0; f0 < F.length; f0++) {
+    var cen = [0, 0, 0];
+    for (var j0 = 0; j0 < 5; j0++) for (var d0 = 0; d0 < 3; d0++) cen[d0] += V[F[f0][j0]][d0] / 5;
+    FCI.push(P.length);
+    P.push(cen);
+    RV.push([]);
+    for (var k0 = 1; k0 <= RIM_STEPS; k0++) {
+      var sc = 1 - RIM * k0 / RIM_STEPS, ring = [];
+      for (var j1 = 0; j1 < 5; j1++) {
+        var w = V[F[f0][j1]];
+        ring.push(P.length);
+        P.push([cen[0] + sc * (w[0] - cen[0]), cen[1] + sc * (w[1] - cen[1]), cen[2] + sc * (w[2] - cen[2])]);
+      }
+      RV[f0].push(ring);
+    }
+  }
+
+  // Band k covers the face from its edge to ring k. Opacities are solved so the stacked
+  // bands fall from EDGE_ALPHA at the edge to nothing at the inner side of the rim, as (1 - t)^2.
+  function rimTarget(j) { var t = j / RIM_STEPS; return EDGE_ALPHA * (1 - t) * (1 - t); }
+  var rimAlpha = [];
+  for (var j2 = 0; j2 < RIM_STEPS; j2++) rimAlpha.push(1 - (1 - rimTarget(j2)) / (1 - rimTarget(j2 + 1)));
+
+  var c0 = P[FCI[0]], v0 = V[F[0][0]];
+  var FACE_R = Math.sqrt(Math.pow(v0[0] - c0[0], 2) + Math.pow(v0[1] - c0[1], 2) + Math.pow(v0[2] - c0[2], 2));
 
   var stage = document.getElementById("stage");
   var svg = document.getElementById("dodsvg");
+  var defs = svg.querySelector("defs");
   var NS = "http://www.w3.org/2000/svg";
-  var poly = [];
+  // back to front: the globe, the motion-blur copies, the solid itself
+  var globe = make("g", null, svg), ghostLayer = make("g", null, svg), solid = make("g", null, svg);
+  var group = [], rims = [], poly = [], clip = [], glints = [];
   for (var i = 0; i < F.length; i++) {
+    var g = document.createElementNS(NS, "g");
+    var rs = [];
+    for (var k1 = 0; k1 < RIM_STEPS; k1++) {
+      var r = document.createElementNS(NS, "path");
+      r.setAttribute("class", "rim");
+      r.setAttribute("fill-opacity", rimAlpha[k1].toFixed(4));
+      g.appendChild(r);
+      rs.push(r);
+    }
     var p = document.createElementNS(NS, "polygon");
     p.setAttribute("class", "face");
-    svg.appendChild(p);
-    poly.push(p);
-  }
+    g.appendChild(p);
 
-  var order = new Array(F.length);
-  var px = new Array(V.length), py = new Array(V.length), pz = new Array(V.length);
-
-  function frame(yaw, pitch) {
-    var c = Math.cos(yaw), s = Math.sin(yaw);
-    var ct = Math.cos(pitch), st = Math.sin(pitch);
-
-    for (var i = 0; i < V.length; i++) {
-      var v = V[i];
-      var x = c * v[0] + s * v[2];
-      var y = v[1];
-      var z = -s * v[0] + c * v[2];
-      var y2 = ct * y - st * z;
-      var z2 = st * y + ct * z;
-      var k = FOC / (CAM - z2);
-      px[i] = x * k; py[i] = -y2 * k; pz[i] = z2;
+    // glints are clipped to their face; the clip sits on a wrapper so the spot's own transform does not move it
+    var cp = document.createElementNS(NS, "clipPath");
+    cp.setAttribute("id", "faceclip" + i);
+    var cpp = document.createElementNS(NS, "polygon");
+    cp.appendChild(cpp);
+    defs.appendChild(cp);
+    var gl = [];
+    for (var l1 = 0; l1 < LIGHTS.length; l1++) {
+      var wrap = document.createElementNS(NS, "g");
+      wrap.setAttribute("clip-path", "url(#faceclip" + i + ")");
+      wrap.setAttribute("display", "none");
+      var spot = document.createElementNS(NS, "circle");
+      spot.setAttribute("class", "glint");
+      spot.setAttribute("r", "1");
+      wrap.appendChild(spot);
+      g.appendChild(wrap);
+      gl.push({ wrap: wrap, spot: spot });
     }
 
+    solid.appendChild(g);
+    group.push(g); rims.push(rs); poly.push(p); clip.push(cpp); glints.push(gl);
+  }
+
+  var ghost = [];
+  for (var g0 = 0; g0 < GHOSTS; g0++) {
+    var gg = make("g", null, ghostLayer), gf = [];
+    for (var g1 = 0; g1 < F.length; g1++) gf.push(make("polygon", "ghost", gg));
+    ghost.push(gf);
+  }
+
+  // The globe is round, so its body and highlights stay put; only their brightness shimmers.
+  var body = make("circle", "globe-body", globe);
+  body.setAttribute("r", (FOC * GLOBE_R / Math.sqrt(CAM * CAM - GLOBE_R * GLOBE_R)).toFixed(4));
+  var highlight = [], flick = [];
+  for (var l2 = 0; l2 < LIGHTS.length; l2++) {
+    var hl = make("circle", "glint", globe), H = LIGHTS[l2].h;
+    hl.setAttribute("r", "1");
+    hl.setAttribute("transform", spotMatrix(GLOBE_R * H[0], GLOBE_R * H[1], GLOBE_R * H[2], H[0], H[1], H[2], GLINT_R));
+    highlight.push(hl); flick.push(1);
+  }
+  var trains = [], trainDots = [], whips = [], whipEls = [];
+  for (var t0 = 0; t0 < TRAINS; t0++) {
+    var td = [];
+    for (var t1 = 0; t1 < TRAIN_DOTS; t1++) td.push(make("circle", "glint", globe));
+    trains.push(null); trainDots.push(td);
+  }
+  for (var w0 = 0; w0 < WHIPS; w0++) { whips.push(null); whipEls.push(make("path", "whip", globe)); }
+
+  var order = new Array(F.length);
+  var px = new Array(P.length), py = new Array(P.length), pz = new Array(P.length);
+  var cx = new Array(P.length), cy = new Array(P.length);   // camera space; pz is its z
+
+  var lastC = null;                 // camera matrix of the latest frame
+
+  function frame() {
+    var span = Math.min(whirl() * EXPOSURE, SECTOR), s = span / SECTOR;
+    var wSolid = 1 - smooth(0.05, 0.45, s);
+    var wGhost = smooth(0, 0.15, s) * (1 - smooth(0.55, 0.95, s));
+    var wGlobe = smooth(0.35, 0.9, s);
+
+    lastC = camera(orient);
+    place(lastC, P.length);
+    if (show(globe, wGlobe)) {
+      globe.setAttribute("transform", "scale(" + (1 + TREMOR_SIZE * wGlobe * tremor()).toFixed(4) + ")");
+      globe.setAttribute("opacity", (wGlobe * (1 - BREATH_GLOW + BREATH_GLOW * breath() * wGlobe)).toFixed(4));
+      drawGlobe();
+    }
+    if (show(solid, wSolid)) drawSolid();
+    if (show(ghostLayer, wGhost)) drawGhosts(span);   // last: it re-places the vertices
+  }
+
+  // How far one exposure smears the solid: 0 is crisp, 1 is a whole sector, which by symmetry
+  // covers every orientation about the axis, so the solid reads as a solid of revolution.
+  function blur() { return Math.min(whirl() * EXPOSURE, SECTOR) / SECTOR; }
+
+  // how fast it turns, rad per ms
+  function whirl() { return Math.sqrt(omega[0] * omega[0] + omega[1] * omega[1] + omega[2] * omega[2]) / 1000; }
+
+  // Camera matrix, row-major: the body's orientation q, then the resting pitch and ROLL.
+  var LEAN_M = mat([Math.cos(ROLL), -Math.sin(ROLL), 0, Math.sin(ROLL), Math.cos(ROLL), 0, 0, 0, 1],
+                   [1, 0, 0, 0, Math.cos(TILT), -Math.sin(TILT), 0, Math.sin(TILT), Math.cos(TILT)]);
+  function camera(q) { return mat(LEAN_M, qmat(q)); }
+
+  // rotation matrix of quaternion q [w, x, y, z], row-major
+  function qmat(q) {
+    var w = q[0], x = q[1], y = q[2], z = q[3];
+    return [1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y),
+            2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x),
+            2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)];
+  }
+
+  // v turned by q, and turned back
+  function rot(q, v) {
+    var m = qmat(q);
+    return [m[0] * v[0] + m[1] * v[1] + m[2] * v[2], m[3] * v[0] + m[4] * v[1] + m[5] * v[2], m[6] * v[0] + m[7] * v[1] + m[8] * v[2]];
+  }
+  function unrot(q, v) {
+    var m = qmat(q);
+    return [m[0] * v[0] + m[3] * v[1] + m[6] * v[2], m[1] * v[0] + m[4] * v[1] + m[7] * v[2], m[2] * v[0] + m[5] * v[1] + m[8] * v[2]];
+  }
+
+  function mat(a, b) {
+    var m = new Array(9);
+    for (var r = 0; r < 3; r++) for (var k = 0; k < 3; k++)
+      m[r * 3 + k] = a[r * 3] * b[k] + a[r * 3 + 1] * b[3 + k] + a[r * 3 + 2] * b[6 + k];
+    return m;
+  }
+
+  // Turn the first n points of P by camera matrix C and project them.
+  function place(C, n) {
+    for (var i = 0; i < n; i++) {
+      var v = P[i];
+      var x = C[0] * v[0] + C[1] * v[1] + C[2] * v[2];
+      var y = C[3] * v[0] + C[4] * v[1] + C[5] * v[2];
+      var z = C[6] * v[0] + C[7] * v[1] + C[8] * v[2];
+      var k = FOC / (CAM - z);
+      cx[i] = x; cy[i] = y; pz[i] = z;
+      px[i] = x * k; py[i] = -y * k;
+    }
+  }
+
+  function drawSolid() {
     for (var f = 0; f < F.length; f++) {
       var a = F[f], zc = 0;
       for (var j = 0; j < 5; j++) zc += pz[a[j]];
@@ -378,46 +676,356 @@
       var front = area < 0;
       var depth = (order[o].z + 1) / 2;          // 0 back, 1 front
 
-      var el = poly[fi];
-      el.setAttribute("points", pts);
-      el.setAttribute("fill-opacity", (front ? 0.13 + 0.13 * depth : 0.06).toFixed(4));
-      el.setAttribute("stroke-opacity", (front ? 0.52 + 0.44 * depth : 0.26).toFixed(4));
-      svg.appendChild(el);
+      poly[fi].setAttribute("points", pts);
+      var outer = "M" + pts + "Z";
+      for (var k2 = 0; k2 < RIM_STEPS; k2++) {
+        var rv = RV[fi][k2], inner = "M";
+        for (var q3 = 0; q3 < 5; q3++) inner += px[rv[q3]].toFixed(4) + "," + py[rv[q3]].toFixed(4) + " ";
+        rims[fi][k2].setAttribute("d", outer + inner + "Z");
+      }
+      clip[fi].setAttribute("points", pts);
+
+      // Light. The face is glass, so a far face shows its inner side through the near ones:
+      // (nx, ny, nz) is the unit normal of whichever side faces the camera.
+      var ci = FCI[fi], ox = cx[ci], oy = cy[ci], oz = pz[ci];
+      var nn = (front ? 1 : -1) / Math.sqrt(ox * ox + oy * oy + oz * oz);
+      var nx = ox * nn, ny = oy * nn, nz = oz * nn;
+      var sheen = 0;
+      for (var li = 0; li < LIGHTS.length; li++) {
+        var L = LIGHTS[li], gs = glints[fi][li];
+        var hn = nx * L.h[0] + ny * L.h[1] + nz * L.h[2];
+        if (hn > 0) sheen += L.i * Math.pow(hn, 16);
+
+        // glint: the point of the face plane that mirrors this light straight into the camera
+        var show = false, dl = nx * L.d[0] + ny * L.d[1] + nz * L.d[2];
+        if (dl > 0) {
+          var rx = 2 * dl * nx - L.d[0], ry = 2 * dl * ny - L.d[1], rz = 2 * dl * nz - L.d[2];
+          var t = (-nx * ox - ny * oy + nz * (CAM - oz)) / dl;
+          var gx = -t * rx, gy = -t * ry, gz = CAM - t * rz;
+          var ex = gx - ox, ey = gy - oy, ez = gz - oz;
+          show = ex * ex + ey * ey + ez * ez < (FACE_R + GLINT_R) * (FACE_R + GLINT_R);
+        }
+        if (show) {
+          gs.spot.setAttribute("transform", spotMatrix(gx, gy, gz, nx, ny, nz, GLINT_R));
+          gs.spot.setAttribute("opacity", (GLINT_ALPHA * L.i).toFixed(4));
+        }
+        gs.wrap.setAttribute("display", show ? "inline" : "none");
+      }
+      poly[fi].setAttribute("fill-opacity", (WALL + SHEEN * sheen).toFixed(4));
+
+      var el = group[fi];
+      el.setAttribute("opacity", (front ? 0.85 + 0.15 * depth : 0.35).toFixed(4));
+      solid.appendChild(el);
     }
+  }
+
+  // Motion blur: copies of the bare solid trailing it across the turn it made during one exposure,
+  // wound back along its present angular velocity.
+  function drawGhosts(span) {
+    var reach = span / whirl() / 1000, ow = rot(orient, omega);   // s the exposure reaches back; omega in the world
+    for (var gi = 0; gi < GHOSTS; gi++) {
+      var back = -reach * (gi + 1) / GHOSTS;
+      place(camera(qmul(qturn([ow[0] * back, ow[1] * back, ow[2] * back]), orient)), V.length);
+      for (var f = 0; f < F.length; f++) {
+        var a = F[f], pts = "", area = 0;
+        for (var q = 0; q < 5; q++) {
+          var A = a[q], B = a[(q + 1) % 5];
+          pts += px[A].toFixed(4) + "," + py[A].toFixed(4) + " ";
+          area += px[A] * py[B] - px[B] * py[A];
+        }
+        var gp = ghost[gi][f], k = area < 0 ? 1 : 0.35;
+        gp.setAttribute("points", pts);
+        gp.setAttribute("fill-opacity", (WALL * k).toFixed(4));
+        gp.setAttribute("stroke-opacity", (0.6 * k).toFixed(4));
+      }
+    }
+  }
+
+  // The globe, and what shows its speed: a shimmering highlight, trains of glints racing
+  // through it with the spin, and arcs whipped round the axis of the moment.
+  function drawGlobe() {
+    for (var i = 0; i < highlight.length; i++)
+      highlight[i].setAttribute("opacity", (GLINT_ALPHA * LIGHTS[i].i * flick[i]).toFixed(4));
+
+    for (var t = 0; t < TRAINS; t++) {
+      var tr = trains[t], dots = trainDots[t];
+      for (var d = 0; d < TRAIN_DOTS; d++) {
+        var on = false;
+        if (tr) {
+          var u = tr.age / tr.life;
+          var p = onSphere(tr, tr.from + tr.sweep * u - d * TRAIN_STEP);
+          var al = Math.sin(Math.PI * u) * smooth(1 / CAM, 0.5, p[2]) * tr.i * (1 - d / TRAIN_DOTS);
+          if (al > 0.01) {
+            var k = FOC / (CAM - p[2]);
+            dots[d].setAttribute("cx", (p[0] * k).toFixed(4));
+            dots[d].setAttribute("cy", (-p[1] * k).toFixed(4));
+            dots[d].setAttribute("r", (DOT_R * k * (1 - 0.4 * d / TRAIN_DOTS)).toFixed(4));
+            dots[d].setAttribute("opacity", al.toFixed(4));
+            on = true;
+          }
+        }
+        dots[d].setAttribute("display", on ? "inline" : "none");
+      }
+    }
+
+    for (var w = 0; w < WHIPS; w++) {
+      var wh = whips[w], path = "";
+      if (wh) {
+        var uw = wh.age / wh.life, pen = false;
+        for (var j = 0; j <= 18; j++) {
+          var pw = onSphere(wh, wh.from + wh.drift * uw + wh.len * j / 18);
+          if (pw[2] > 1 / CAM + 0.03) {     // the near side of the globe only
+            var kw = FOC / (CAM - pw[2]);
+            path += (pen ? "L" : "M") + (pw[0] * kw).toFixed(4) + "," + (-pw[1] * kw).toFixed(4);
+            pen = true;
+          } else pen = false;
+        }
+        whipEls[w].setAttribute("stroke-opacity", (0.55 * Math.sin(Math.PI * uw)).toFixed(4));
+      }
+      whipEls[w].setAttribute("d", path);
+    }
+  }
+
+  // The breath, -1 to 1. With sound on it runs on the audio clock, read at the moment now being heard,
+  // so what is seen matches what is heard; before that, on the page clock.
+  function breath() {
+    var t = performance.now() / 1000;
+    if (audio && soundOn) {
+      var c = audio.ctx, ts = c.getOutputTimestamp ? c.getOutputTimestamp() : null;
+      t = (ts && ts.contextTime ? ts.contextTime + (performance.now() - ts.performanceTime) / 1000
+                                : c.currentTime - (c.outputLatency || c.baseLatency || 0)) - audio.breathT0;
+    }
+    return Math.sin(2 * Math.PI * t / BREATH);
+  }
+
+  // The shudder, -1 to 1: the sound's flutter itself, read at the moment now being heard;
+  // with the sound off, a page-clock copy at the same rate.
+  function tremor() {
+    if (audio && soundOn) {
+      var c = audio.ctx, buf = audio.lfoBuf;
+      audio.lfoTap.getFloatTimeDomainData(buf);
+      var back = Math.round((c.outputLatency || c.baseLatency || 0) * c.sampleRate);
+      return buf[Math.max(0, buf.length - 1 - back)];
+    }
+    return Math.sin(tremorPhase);
+  }
+
+  // the flutter runs at the turn rate, turns per second
+  function flutterHz() { return Math.max(0.5, Math.abs(whirl()) * 1000 / (2 * Math.PI)); }
+
+  // Age the globe's effects and start new ones; how many depends on how globe-like the solid is.
+  function stir(dt) {
+    var w = smooth(0.35, 0.9, blur());
+    for (var i = 0; i < TRAINS; i++) if (trains[i] && (trains[i].age += dt) > trains[i].life) trains[i] = null;
+    for (var j = 0; j < WHIPS; j++) if (whips[j] && (whips[j].age += dt) > whips[j].life) whips[j] = null;
+    if (Math.random() < TRAIN_RATE * w * dt / 1000) spawnTrain();
+    if (Math.random() < WHIP_RATE * w * dt / 1000) spawnWhip();
+    // facets flash through the highlights faster than the eye can follow
+    for (var l = 0; l < flick.length; l++) flick[l] += ((w > 0 ? 0.55 + 0.45 * Math.random() : 1) - flick[l]) * 0.35;
+  }
+
+  // An effect rides a latitude circle about the axis it is turning on at the moment, frozen when it
+  // starts; e1, e2 span the circle's plane so that angle grows with the turn.
+  function spinFrame() {
+    var C = lastC, o = omega;
+    var a = unit([C[0] * o[0] + C[1] * o[1] + C[2] * o[2], C[3] * o[0] + C[4] * o[1] + C[5] * o[2],
+                  C[6] * o[0] + C[7] * o[1] + C[8] * o[2]]);
+    var e1 = unit(Math.abs(a[2]) < 0.95 ? [a[1], -a[0], 0] : [1 - a[0] * a[0], -a[0] * a[1], -a[0] * a[2]]);
+    var e2 = [a[1] * e1[2] - a[2] * e1[1], a[2] * e1[0] - a[0] * e1[2], a[0] * e1[1] - a[1] * e1[0]];
+    return { a: a, e1: e1, e2: e2, age: 0 };
+  }
+
+  // A train of glints: facets catching a light one after another, so it runs through that light's highlight.
+  function spawnTrain() {
+    var slot = trains.indexOf(null);
+    if (slot < 0 || !lastC) return;
+    var e = spinFrame(), li = Math.random() < 0.75 ? 0 : 1, H = LIGHTS[li].h;
+    var ha = H[0] * e.a[0] + H[1] * e.a[1] + H[2] * e.a[2];
+    e.lat = Math.asin(Math.max(-1, Math.min(1, ha))) + (Math.random() - 0.5) * 0.3;
+    e.from = Math.atan2(H[0] * e.e2[0] + H[1] * e.e2[1] + H[2] * e.e2[2],
+                        H[0] * e.e1[0] + H[1] * e.e1[1] + H[2] * e.e1[2]) - 1.3 - Math.random() * 0.3;
+    e.sweep = 2.6;
+    e.i = LIGHTS[li].i;
+    e.life = TRAIN_LIFE * (0.8 + 0.4 * Math.random());
+    trains[slot] = e;
+  }
+
+  // A whip: an edge caught mid-sweep, a thin arc on the near side of the globe.
+  function spawnWhip() {
+    var slot = whips.indexOf(null);
+    if (slot < 0 || !lastC) return;
+    var e = spinFrame();
+    e.lat = (Math.random() - 0.5) * 2.2;
+    e.len = 1.2 + Math.random() * 1.4;
+    e.from = (e.e2[2] >= 0 ? 1 : -1) * Math.PI / 2 - e.len / 2 + (Math.random() - 0.5) * 1.2;
+    e.drift = 0.8;
+    e.life = WHIP_LIFE * (0.7 + 0.6 * Math.random());
+    whips[slot] = e;
+  }
+
+  // point at angle phi round an effect's latitude circle, on the globe, in camera space
+  function onSphere(e, phi) {
+    var c = Math.cos(e.lat), s = Math.sin(e.lat), cp = Math.cos(phi), sp = Math.sin(phi);
+    return [GLOBE_R * (s * e.a[0] + c * (cp * e.e1[0] + sp * e.e2[0])),
+            GLOBE_R * (s * e.a[1] + c * (cp * e.e1[1] + sp * e.e2[1])),
+            GLOBE_R * (s * e.a[2] + c * (cp * e.e1[2] + sp * e.e2[2]))];
+  }
+
+  // Quaternions [w, x, y, z] carry the body's orientation.
+  function qmul(a, b) {
+    return [a[0] * b[0] - a[1] * b[1] - a[2] * b[2] - a[3] * b[3],
+            a[0] * b[1] + a[1] * b[0] + a[2] * b[3] - a[3] * b[2],
+            a[0] * b[2] - a[1] * b[3] + a[2] * b[0] + a[3] * b[1],
+            a[0] * b[3] + a[1] * b[2] - a[2] * b[1] + a[3] * b[0]];
+  }
+
+  // turn by the vector r, its length the angle
+  function qturn(r) {
+    var a = Math.sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+    if (a < 1e-9) return [1, 0, 0, 0];
+    var s = Math.sin(a / 2) / a;
+    return [Math.cos(a / 2), r[0] * s, r[1] * s, r[2] * s];
+  }
+
+  // ---------- the body ----------
+  var I_MEAN = (INERTIA[0] + INERTIA[1] + INERTIA[2]) / 3;
+
+  // Angular acceleration in the body frame, rad per s squared, by Euler's equations for a rigid
+  // body. The torques are worked out in the world, per unit of mean inertia, then turned into the body.
+  function accel(wb) {
+    var ow = rot(orient, wb), up = rot(orient, [0, 1, 0]), tq = [0, 0, 0], grip = GRIP / 1000;
+    if (!dragging) {
+      // the spin cycle's vortex, about the vertical
+      tq[1] += ((ambient + spin) * 1000 - ow[1]) / (clock < CALM ? DRIVE_CALM : DRIVE);
+    } else {
+      // a hand on it instead: friction toward the hand's motion
+      tq[0] += (handPitch * 1000 - ow[0]) / grip;
+      tq[1] += (handYaw * 1000 - ow[1]) / grip;
+      tq[2] -= ow[2] / grip;
+    }
+    // the air
+    for (var i = 0; i < 3; i++) tq[i] -= DRAG * ow[i];
+    // the weight below the centre, pulled down at -up: its torque swings the solid upright
+    tq[0] -= SWAY * SWAY * up[2];
+    tq[2] += SWAY * SWAY * up[0];
+
+    var tb = unrot(orient, tq);
+    var L = [INERTIA[0] * wb[0], INERTIA[1] * wb[1], INERTIA[2] * wb[2]];
+    var gyro = [wb[1] * L[2] - wb[2] * L[1], wb[2] * L[0] - wb[0] * L[2], wb[0] * L[1] - wb[1] * L[0]];
+    return [(I_MEAN * tb[0] - gyro[0]) / INERTIA[0], (I_MEAN * tb[1] - gyro[1]) / INERTIA[1],
+            (I_MEAN * tb[2] - gyro[2]) / INERTIA[2]];
+  }
+
+  // Advance the body by sec seconds: Runge-Kutta on its angular velocity in steps of at most 2 ms,
+  // turning it by the mean angular velocity over each step.
+  function advance(sec) {
+    var n = Math.max(1, Math.ceil(sec / 0.002)), h = sec / n;
+    for (var i = 0; i < n; i++) {
+      var k1 = accel(omega), k2 = accel(add3(omega, k1, h / 2));
+      var k3 = accel(add3(omega, k2, h / 2)), k4 = accel(add3(omega, k3, h));
+      var next = [0, 0, 0];
+      for (var j = 0; j < 3; j++) next[j] = omega[j] + h / 6 * (k1[j] + 2 * k2[j] + 2 * k3[j] + k4[j]);
+      var o = qmul(orient, qturn([(omega[0] + next[0]) * h / 2, (omega[1] + next[1]) * h / 2, (omega[2] + next[2]) * h / 2]));
+      var len = Math.sqrt(o[0] * o[0] + o[1] * o[1] + o[2] * o[2] + o[3] * o[3]);
+      orient = [o[0] / len, o[1] / len, o[2] / len, o[3] / len];
+      omega = next;
+    }
+  }
+  function add3(a, b, k) { return [a[0] + k * b[0], a[1] + k * b[1], a[2] + k * b[2]]; }
+
+  // a chance nudge crosswise at each spin-up; no two spin-ups tumble alike
+  function kick() {
+    omega[0] += (Math.random() * 2 - 1) * KICK;
+    omega[2] += (Math.random() * 2 - 1) * KICK;
+  }
+
+  // Transform that lays the unit glint circle flat on a surface at (gx, gy, gz) with unit normal n,
+  // at radius rr, so perspective foreshortens it with the surface.
+  function spotMatrix(gx, gy, gz, nx, ny, nz, rr) {
+    var ax = Math.abs(ny) < 0.9 ? 0 : 1, ay = 1 - ax;
+    var ux = -nz * ay, uy = nz * ax, uz = nx * ay - ny * ax;
+    var un = rr / Math.sqrt(ux * ux + uy * uy + uz * uz);
+    ux *= un; uy *= un; uz *= un;
+    var wx = ny * uz - nz * uy, wy = nz * ux - nx * uz, wz = nx * uy - ny * ux;
+    var k0 = FOC / (CAM - gz), ku = FOC / (CAM - gz - uz), kw = FOC / (CAM - gz - wz);
+    var X = gx * k0, Y = -gy * k0;
+    return "matrix(" +
+      ((gx + ux) * ku - X).toFixed(4) + "," + (-(gy + uy) * ku - Y).toFixed(4) + "," +
+      ((gx + wx) * kw - X).toFixed(4) + "," + (-(gy + wy) * kw - Y).toFixed(4) + "," +
+      X.toFixed(4) + "," + Y.toFixed(4) + ")";
+  }
+
+  function make(tag, cls, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (cls) e.setAttribute("class", cls);
+    parent.appendChild(e);
+    return e;
+  }
+
+  function smooth(a, b, x) {
+    x = (x - a) / (b - a);
+    x = x < 0 ? 0 : (x > 1 ? 1 : x);
+    return x * x * (3 - 2 * x);
+  }
+
+  // Show a layer at weight w, or take it out of rendering altogether; true if it is shown.
+  function show(el, w) {
+    var on = w > 0.01;
+    el.setAttribute("display", on ? "inline" : "none");
+    if (on) el.setAttribute("opacity", w.toFixed(4));
+    return on;
   }
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   var ambient = reduce.matches ? 0 : (2 * Math.PI) / PERIOD;   // rad per ms
 
-  var yaw = 0, pitch = TILT;
-  var velYaw = 0, velPitch = 0;
+  var CYCLE = CALM + RISE + HOLD + FALL;
+  var spin = 0;                     // spin-cycle speed on top of the ambient turn, rad per ms
+  var clock = CALM - 6000;          // place in the spin cycle; the first spin-up comes 6 s in
+
+  function spinAt(tc) {
+    if (tc < CALM) return 0;
+    tc -= CALM;
+    if (tc < RISE) { var u = tc / RISE; return SPIN_MAX * u * u; }
+    tc -= RISE;
+    if (tc < HOLD) return SPIN_MAX;
+    tc -= HOLD;
+    var v = 1 - tc / FALL;
+    return SPIN_MAX * v * v * v;
+  }
+
+  var orient = [1, 0, 0, 0];        // the body's orientation, body to world; upright is the identity
+  var omega = [0, ambient * 1000, 0];   // its angular velocity in the body, rad per s
+  var tremorPhase = 0;              // page-clock copy of the sound's flutter, for the globe's shudder with the sound off
+
+  var handYaw = 0, handPitch = 0;   // how fast the hand on it is moving, rad per ms
   var dragging = false, pointerId = null, freeY = false;
   var lastX = 0, lastY = 0, lastMoveT = 0;
   var raf = 0, last = null;
-
-  function clampPitch() {
-    if (pitch >  PITCH_LIMIT) pitch =  PITCH_LIMIT;
-    if (pitch < -PITCH_LIMIT) pitch = -PITCH_LIMIT;
-  }
 
   function loop(t) {
     if (last === null) last = t;
     var dt = Math.min(t - last, 100);
     last = t;
 
-    if (!dragging) {
-      yaw   += (ambient + velYaw) * dt;
-      pitch += velPitch * dt;
-      clampPitch();
-      var d = Math.pow(DECAY, dt / 1000);
-      velYaw *= d; velPitch *= d;
-      if (Math.abs(velYaw) < 1e-7) velYaw = 0;
-      if (Math.abs(velPitch) < 1e-7) velPitch = 0;
+    if (!dragging && ambient !== 0) {
+      var was = clock;
+      clock = (clock + dt) % CYCLE;
+      if (was < CALM && clock >= CALM) kick();
+      spin = spinAt(clock);
+    }
+    if (dragging && t - lastMoveT > 60) { handYaw = 0; handPitch = 0; }   // a hand held still
+    advance(dt / 1000);
+    if (ambient !== 0) {
+      tremorPhase = (tremorPhase + 2 * Math.PI * flutterHz() * dt / 1000) % (2 * Math.PI);
+      stir(dt);
     }
 
-    frame(yaw, pitch);
+    frame();
+    voice(dt);
 
-    if (ambient === 0 && !dragging && velYaw === 0 && velPitch === 0) { raf = 0; last = null; return; }
+    // with motion reduced there is no calm turn: rest once it has come to a stop, upright
+    if (ambient === 0 && !dragging && whirl() < 1e-6 && rot(orient, [0, 1, 0])[1] > 0.9999) { raf = 0; last = null; return; }
     raf = requestAnimationFrame(loop);
   }
 
@@ -425,14 +1033,16 @@
     if (!raf) { last = null; raf = requestAnimationFrame(loop); }
   }
 
-  function cap(v) { return v > V_CAP ? V_CAP : (v < -V_CAP ? -V_CAP : v); }
+  function cap(v) { return v > HAND_CAP ? HAND_CAP : (v < -HAND_CAP ? -HAND_CAP : v); }
 
   stage.addEventListener("pointerdown", function (e) {
     if (pointerId !== null) return;
     pointerId = e.pointerId;
     dragging = true;
     freeY = (e.pointerType === "mouse" || e.pointerType === "pen");
-    velYaw = 0; velPitch = 0;
+    // the hand takes over from the vortex and brakes the solid by friction; the cycle starts over from calm
+    spin = 0; clock = 0;
+    handYaw = 0; handPitch = 0;
     lastX = e.clientX; lastY = e.clientY; lastMoveT = e.timeStamp;
     stage.classList.add("dragging");
     stage.setPointerCapture(e.pointerId);
@@ -444,44 +1054,153 @@
     var dx = e.clientX - lastX, dy = e.clientY - lastY;
     var dt = e.timeStamp - lastMoveT;
     lastX = e.clientX; lastY = e.clientY; lastMoveT = e.timeStamp;
+    if (dt <= 0) return;
 
-    var dYaw = dx * K_YAW;
-    yaw += dYaw;
-    var dPitch = 0;
-    if (freeY) { dPitch = dy * K_PITCH; pitch += dPitch; clampPitch(); }
-
-    if (dt > 0) { velYaw = cap(dYaw / dt); velPitch = cap(dPitch / dt); }
-    frame(yaw, pitch);
+    // the hand's speed, steadied over a couple of events; the loop lets the solid follow it
+    handYaw += (cap(dx * K_YAW / dt) - handYaw) * 0.5;
+    if (freeY) handPitch += (cap(dy * K_PITCH / dt) - handPitch) * 0.5;
   });
 
   function release(e) {
     if (e.pointerId !== pointerId) return;
     dragging = false; pointerId = null;
+    handYaw = 0; handPitch = 0;       // let go, it keeps whatever momentum it has picked up
     stage.classList.remove("dragging");
-    if (e.timeStamp - lastMoveT > 90) { velYaw = 0; velPitch = 0; }  // held still, do not fling
     wake();
   }
   stage.addEventListener("pointerup", release);
   stage.addEventListener("pointercancel", release);
 
+  // an arrow key is a push: it adds angular momentum rather than turning it outright
   stage.addEventListener("keydown", function (e) {
-    var step = 6 * Math.PI / 180;
-    if (e.key === "ArrowLeft")       { yaw -= step; }
-    else if (e.key === "ArrowRight") { yaw += step; }
-    else if (e.key === "ArrowUp")    { pitch -= step; clampPitch(); }
-    else if (e.key === "ArrowDown")  { pitch += step; clampPitch(); }
+    var push = [0, 0, 0], k = KEY_PUSH * 1000;
+    if (e.key === "ArrowLeft")       push[1] = -k;
+    else if (e.key === "ArrowRight") push[1] = k;
+    else if (e.key === "ArrowUp")    push[0] = -k;
+    else if (e.key === "ArrowDown")  push[0] = k;
     else return;
     e.preventDefault();
-    frame(yaw, pitch);
+    omega = add3(omega, unrot(orient, push), 1);
     wake();
+  });
+
+  // ---------- sound ----------
+  // Off until asked for, as browsers require. A 20-30 Hz drone climbs with the spin; driven into
+  // soft saturation, its overtones carry it on speakers too small for the fundamental. At full
+  // spin a low rumble joins, fluttering at the turn rate. All of it under a low-pass, muffled.
+  var SOUND_LEVEL = 0.28;
+  var HUM_LOW = 20, HUM_HIGH = 30;   // Hz, at rest and at full spin
+  var MUFFLE = 320;                  // Hz, low-pass over everything
+  var soundBtn = document.getElementById("sound");
+  var audio = null, soundOn = false, voiceT = 0;
+  if (!(window.AudioContext || window.webkitAudioContext)) soundBtn.hidden = true;
+
+  function buildAudio() {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)(), a = { ctx: ctx };
+    a.master = ctx.createGain(); a.master.gain.value = 0;
+    var muffle = ctx.createBiquadFilter(); muffle.type = "lowpass"; muffle.frequency.value = MUFFLE; muffle.Q.value = 0.5;
+    // a gentle limiter only, so it does not flatten the breathing
+    var comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -10; comp.knee.value = 8; comp.ratio.value = 4;
+    comp.attack.value = 0.02; comp.release.value = 0.4;
+    a.master.connect(muffle); muffle.connect(comp); comp.connect(ctx.destination);
+
+    // flutter: an amplitude wobble at the turn rate, shared by drone and rumble
+    a.flutter = ctx.createGain();
+    a.lfo = ctx.createOscillator(); a.lfoDepth = ctx.createGain(); a.lfoDepth.gain.value = 0;
+    a.lfo.connect(a.lfoDepth); a.lfoDepth.connect(a.flutter.gain);
+    a.lfoTap = ctx.createAnalyser(); a.lfoTap.fftSize = 4096; a.lfoBuf = new Float32Array(4096);
+    a.lfo.connect(a.lfoTap);         // the globe reads its shudder from here
+    a.flutter.connect(a.master);
+
+    // drone: two sines one breath apart, so they beat once a breath; the second softer, so it never cancels out
+    a.o1 = ctx.createOscillator(); a.o2 = ctx.createOscillator();
+    a.o1.frequency.value = HUM_LOW; a.o2.frequency.value = HUM_LOW + 1 / BREATH;
+    var sum = ctx.createGain(); sum.gain.value = 0.6;
+    var soft = ctx.createGain(); soft.gain.value = 0.5;
+    a.o1.connect(sum); a.o2.connect(soft); soft.connect(sum);
+    a.drive = ctx.createGain();
+    var shaper = ctx.createWaveShaper(); shaper.curve = softClip(2.5); shaper.oversample = "2x";
+    a.droneTone = ctx.createBiquadFilter(); a.droneTone.type = "lowpass";
+    a.drone = ctx.createGain(); a.drone.gain.value = 0;
+    sum.connect(a.drive); a.drive.connect(shaper); shaper.connect(a.droneTone);
+    a.droneTone.connect(a.drone); a.drone.connect(a.flutter);
+
+    // rumble: looped brown noise, low-passed
+    var len = ctx.sampleRate * 4, buf = ctx.createBuffer(1, len, ctx.sampleRate), data = buf.getChannelData(0), b = 0;
+    for (var i = 0; i < len; i++) { b = (b + 0.02 * (Math.random() * 2 - 1)) / 1.02; data[i] = b * 3.5; }
+    var noise = ctx.createBufferSource(); noise.buffer = buf; noise.loop = true;
+    a.rumbleTone = ctx.createBiquadFilter(); a.rumbleTone.type = "lowpass"; a.rumbleTone.Q.value = 0.8;
+    a.rumble = ctx.createGain(); a.rumble.gain.value = 0;
+    noise.connect(a.rumbleTone); a.rumbleTone.connect(a.rumble); a.rumble.connect(a.flutter);
+
+    // breath: one slow sine swells the drone, opens its tone and lifts the rumble; the globe swells with it
+    a.breath = ctx.createOscillator(); a.breath.frequency.value = 1 / BREATH;
+    a.breathDrone = ctx.createGain(); a.breathTone = ctx.createGain(); a.breathRumble = ctx.createGain();
+    a.breathDrone.gain.value = a.breathTone.gain.value = a.breathRumble.gain.value = 0;
+    a.breath.connect(a.breathDrone); a.breathDrone.connect(a.drone.gain);
+    a.breath.connect(a.breathTone); a.breathTone.connect(a.droneTone.frequency);
+    a.breath.connect(a.breathRumble); a.breathRumble.connect(a.rumble.gain);
+
+    // the drone's beat starts a quarter breath late, so it peaks on the in-breath like everything else
+    a.breathT0 = ctx.currentTime + 0.05;
+    a.breath.start(a.breathT0);
+    a.o1.start(a.breathT0 + BREATH / 4); a.o2.start(a.breathT0 + BREATH / 4);
+    a.lfo.start(); noise.start();
+    return a;
+  }
+
+  function softClip(k) {
+    var n = 1024, c = new Float32Array(n);
+    for (var i = 0; i < n; i++) { var x = i * 2 / (n - 1) - 1; c[i] = Math.tanh(k * x) / Math.tanh(k); }
+    return c;
+  }
+
+  // Follow the spin a few times a second; the audio clock glides between settings.
+  function voice(dt) {
+    if (!soundOn || !audio || (voiceT += dt) < 66) return;
+    voiceT = 0;
+    var sp = Math.min(1, Math.abs(whirl()) / SPIN_MAX), s = blur(), t = audio.ctx.currentTime;
+    var f = HUM_LOW + (HUM_HIGH - HUM_LOW) * sp;
+    var deep = smooth(0.35, 0.9, s);                                           // breathing grows with the globe
+    var hum = 0.08 + 0.5 * smooth(0, 0.3, sp), roar = 1.3 * smooth(0.45, 1, s);
+    audio.o1.frequency.setTargetAtTime(f, t, 0.3);
+    audio.o2.frequency.setTargetAtTime(f + 1 / BREATH, t, 0.3);
+    audio.drive.gain.setTargetAtTime(1 + 4 * sp, t, 0.3);                    // more overtones as it climbs
+    audio.droneTone.frequency.setTargetAtTime(70 + 150 * sp, t, 0.3);
+    audio.drone.gain.setTargetAtTime(hum, t, 0.25);
+    audio.rumble.gain.setTargetAtTime(roar, t, 0.4);
+    audio.breathDrone.gain.setTargetAtTime(0.4 * hum * deep, t, 0.3);
+    audio.breathTone.gain.setTargetAtTime(80 * deep, t, 0.3);
+    audio.breathRumble.gain.setTargetAtTime(0.35 * roar * deep, t, 0.3);
+    audio.rumbleTone.frequency.setTargetAtTime(90 + 90 * s, t, 0.4);
+    audio.lfo.frequency.setTargetAtTime(flutterHz(), t, 0.3);
+    audio.lfoDepth.gain.setTargetAtTime(0.2 * smooth(0.15, 0.7, sp), t, 0.3);
+  }
+
+  soundBtn.addEventListener("click", function () {
+    soundOn = !soundOn;
+    soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
+    soundBtn.textContent = soundOn ? "sound on" : "sound off";
+    if (soundOn && !audio) audio = buildAudio();
+    var t = audio.ctx.currentTime;
+    if (soundOn) {
+      audio.ctx.resume();
+      voiceT = Infinity; voice(0);
+      audio.master.gain.setTargetAtTime(SOUND_LEVEL, t, 0.6);
+    } else {
+      audio.master.gain.setTargetAtTime(0, t, 0.15);
+      setTimeout(function () { if (!soundOn) audio.ctx.suspend(); }, 800);
+    }
   });
 
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) { cancelAnimationFrame(raf); raf = 0; last = null; }
     else wake();
+    if (audio && soundOn) { if (document.hidden) audio.ctx.suspend(); else audio.ctx.resume(); }
   });
 
-  frame(yaw, pitch);
+  frame();
   if (ambient !== 0) wake();
 })();
 </script>
