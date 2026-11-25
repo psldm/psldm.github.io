@@ -10,57 +10,62 @@ Live at **[m0ss.io](https://m0ss.io)**.
 | File | Purpose |
 |---|---|
 | `index.html` | The whole site: markup, styles and script in one file, no build step, no dependencies |
-| `sky.webp`, `sky.jpg` | Background, the galactic centre in near-infrared (NASA/JPL-Caltech/ESA/CXC/STScI, PIA12348); WebP first, JPEG as a fallback |
-| `favicon.svg`, `favicon.ico`, `favicon-32.png`, `apple-touch-icon.png` | Icons, the dodecahedron projected from the same vertex coordinates |
+| `favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | Icons, the dodecahedron projected from the same vertex coordinates |
 | `og.jpg` | 1200×630 preview card for link sharing |
 | `robots.txt`, `sitemap.xml` | Crawling rules and the single-page sitemap |
 | `CNAME` | Ties the site to the `m0ss.io` domain. Do not delete it |
 
+There are no web fonts, analytics, form services or other third-party requests.
+
+## Design
+
+The site is a mobile-first research page: the author's Greek signature and dodecahedron, a
+one-paragraph About, three Selected work entries, correspondence, then the complete
+publication archive. The section navigation uses ordinary anchors. The archive uses native
+`<details>` elements grouped by year. Every publication remains in the HTML and can be opened
+without JavaScript; supporting browsers animate the disclosure with CSS.
+
 ## The dodecahedron
 
-Nothing in the hero is drawn by hand. The regular dodecahedron is computed from its exact
-vertex coordinates and rendered in SVG every frame.
+The regular dodecahedron is computed from exact vertex coordinates. A static first frame is
+inline in the HTML, so the symbol is visible without JavaScript and does not wait for scene
+construction. The script only updates 12 face polygons and one path containing all 30 edges.
 
-- **Look.** Translucent gold faces with a narrow gold rim along every edge, lit by two
-  lights that sit out of frame; sun glints slide across a face whenever it turns to catch one.
-- **Motion.** A rigid body integrated from Euler's equations. Its mass is spread unevenly
-  (a weight below the centre and three unequal moments of inertia), so when it is spun about
-  its middle axis it flips over and over on its own, the tennis-racket effect. Each spin-up
-  starts from a small random nudge, so no two are alike.
-- **Spin cycle.** Calm turning, a slow spin-up, a stretch at full speed where the solid smears
-  into a breathing globe with racing glints, then braking, and again. Motion blur is drawn with
-  trailing copies of the solid.
-- **Touch.** Dragging it works through friction, with slip: it is heavy, takes a while to
-  follow the hand, and coasts after release. Arrow keys push it.
-- **Sound.** Off until the visitor turns it on (bottom right of the hero). A muffled
-  20–30 Hz drone climbs with the spin; at full speed a low rumble joins, the whole sound
-  breathes on a 5 s cycle, and the globe shudders in time with the sound's flutter at the
-  turn rate. Everything is synthesized in the browser with the Web Audio API.
+- **Motion.** A calm quaternion-based turn, with inertial dragging and arrow-key control.
+- **Frame rate.** 30 fps at rest, up to 60 fps during interaction when rendering is cheap;
+  measured frame cost can reduce this to 30 or 20 fps.
+- **Lifecycle.** Rendering stops when the symbol leaves the viewport, the tab is hidden, or
+  reduced motion is requested and the body has settled. Changing the system preference works
+  without reloading.
 - **Reduced motion.** With `prefers-reduced-motion` the solid stays still until touched.
+
+If the vertex or face data changes, regenerate the inline SVG first frame as well as the
+JavaScript arrays.
 
 ### Tuning
 
-The main settings are constants near the top of the script in `index.html`:
+The settings are constants near the top of the script in `index.html`:
 
 | Constant | What it sets |
 |---|---|
-| `CALM`, `RISE`, `HOLD`, `FALL` | Length of each phase of the spin cycle, in ms |
-| `INERTIA` | Moments of inertia; the more unequal, the sooner and more often it flips |
-| `SWAY` | Strength of the weight that rights it once it slows |
-| `DRAG` | Air drag on its turning |
-| `KICK` | Size of the random nudge at each spin-up |
-| `GRIP` | How hard it is to drag by hand |
-| `RIM`, `WALL` | Width of the gold rim and density of the faces |
-| `BREATH`, `TREMOR_SIZE` | The globe's breathing period and shudder |
-| `SOUND_LEVEL` | Overall volume |
+| `PERIOD` | Length of one calm turn, in ms |
+| `K_YAW`, `K_PITCH` | Rotation per dragged pixel |
+| `HAND_CAP` | Maximum hand-driven angular speed |
+| `KEY_PUSH` | Angular speed added by an arrow key |
+| `CAM`, `FOC` | Camera distance and focal scale |
+| `TILT`, `ROLL` | Resting orientation |
 
 ## Updating the list of works
 
-The list sits in `<ol class="works">` in `index.html`. Every link is a Zenodo **concept
-DOI**, which always resolves to the latest version of a record, so a new version on Zenodo
-needs no change here. When the Theory of Temporal Spheres is finished, change its
-`in progress` label.
+The archive sits in the two year-grouped `<details>` elements, each containing an
+`<ol class="works">`. Every link is a Zenodo **concept DOI**, which always resolves to the
+latest version of a record, so a new version on Zenodo needs no change here. Update the year
+counts when adding a record. When the Theory of Temporal Spheres is finished, change its
+`in progress` label in the archive.
 
 ## Contact
+
+The form composes a message locally through the visitor's mail client; nothing is sent to a
+form backend. Without JavaScript, the native `mailto:` form and the direct email link remain.
 
 [eva@m0ss.io](mailto:eva@m0ss.io) · ORCID [0009-0002-9793-9139](https://orcid.org/0009-0002-9793-9139)
