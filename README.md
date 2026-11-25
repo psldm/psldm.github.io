@@ -11,6 +11,9 @@ Live at **[m0ss.io](https://m0ss.io)**.
 |---|---|
 | `index.html` | The whole site: markup, styles and script in one file, no build step, no dependencies |
 | `sky.webp`, `sky.jpg` | Background, the galactic centre in near-infrared (NASA/JPL-Caltech/ESA/CXC/STScI, PIA12348); WebP first, JPEG as a fallback |
+| `favicon.svg`, `favicon.ico`, `favicon-32.png`, `apple-touch-icon.png` | Icons, the dodecahedron projected from the same vertex coordinates |
+| `og.jpg` | 1200×630 preview card for link sharing |
+| `robots.txt`, `sitemap.xml` | Crawling rules and the single-page sitemap |
 | `CNAME` | Ties the site to the `m0ss.io` domain. Do not delete it |
 
 ## The dodecahedron

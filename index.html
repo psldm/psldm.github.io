@@ -3,8 +3,68 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Eva Moss</title>
+<title>Eva Moss &#8212; Theory of Temporal Spheres</title>
 <meta name="description" content="Eva Moss, independent researcher. The Theory of Temporal Spheres and dodecahedral structure across cosmology, physics, number theory and biology.">
+<meta name="author" content="Eva Moss">
+<meta name="theme-color" content="#04060a">
+<link rel="canonical" href="https://m0ss.io/">
+<link rel="me" href="https://orcid.org/0009-0002-9793-9139">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Eva Moss">
+<meta property="og:title" content="Eva Moss &#8212; Theory of Temporal Spheres">
+<meta property="og:description" content="Eva Moss, independent researcher. The Theory of Temporal Spheres and dodecahedral structure across cosmology, physics, number theory and biology.">
+<meta property="og:url" content="https://m0ss.io/">
+<meta property="og:image" content="https://m0ss.io/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Gold dodecahedron over a near-infrared image of the galactic centre">
+<meta property="og:locale" content="en_US">
+<meta property="profile:first_name" content="Eva">
+<meta property="profile:last_name" content="Moss">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Eva Moss &#8212; Theory of Temporal Spheres">
+<meta name="twitter:description" content="Eva Moss, independent researcher. The Theory of Temporal Spheres and dodecahedral structure across cosmology, physics, number theory and biology.">
+<meta name="twitter:image" content="https://m0ss.io/og.jpg">
+<meta name="twitter:image:alt" content="Gold dodecahedron over a near-infrared image of the galactic centre">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "url": "https://m0ss.io/",
+  "name": "Eva Moss",
+  "inLanguage": "en",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Eva Moss",
+    "url": "https://m0ss.io/",
+    "email": "mailto:eva@m0ss.io",
+    "jobTitle": "Independent researcher",
+    "description": "Eva Moss, independent researcher. The Theory of Temporal Spheres and dodecahedral structure across cosmology, physics, number theory and biology.",
+    "identifier": {
+      "@type": "PropertyValue",
+      "propertyID": "ORCID",
+      "value": "0009-0002-9793-9139"
+    },
+    "sameAs": ["https://orcid.org/0009-0002-9793-9139"],
+    "knowsAbout": [
+      "Theory of Temporal Spheres",
+      "Dodecahedral space",
+      "Icosahedral symmetry",
+      "Cosmic topology",
+      "Base 60",
+      "Quasicrystals",
+      "Genetic code"
+    ]
+  }
+}
+</script>
 <style>
   :root{
     --void:#04060a;
@@ -12,8 +72,8 @@
     --solid:#d9b25c;
     --solid-edge:#f3d68c;
     --ink:#e8eaf0;
-    --ink-dim:#79808f;
-    --ink-faint:#4b5160;
+    --ink-dim:#a0a7b5;
+    --ink-faint:#8d94a3;
     --bronze:#b98b4e;
     --rule:rgba(120,200,170,.15);
 
@@ -89,7 +149,7 @@
     -webkit-tap-highlight-color:transparent;
   }
   .stage.dragging{cursor:grabbing}
-  .stage:focus-visible{outline:none}
+  .stage:focus-visible{outline:2px solid var(--bronze);outline-offset:.7rem;border-radius:50%}
   .stage:focus-visible svg,
   .stage:hover svg{filter:drop-shadow(0 0 26px rgba(217,178,92,.42))}
   .stage svg{
@@ -158,7 +218,7 @@
   .sound:focus-visible{outline:1px solid var(--bronze);outline-offset:3px;border-radius:1px}
 
   /* ---------- body ---------- */
-  section{padding:clamp(4.5rem,11vh,8rem) 0}
+  section{padding:clamp(4.5rem,11vh,8rem) 0;background:rgba(4,6,10,.7)}
   .thesis{border-top:1px solid var(--rule)}
   .thesis p{
     margin:0;
@@ -209,6 +269,7 @@
   footer{
     border-top:1px solid var(--rule);
     padding:3.5rem 0 4.5rem;
+    background:rgba(4,6,10,.7);
   }
   .about{margin:0 0 3.2rem}
   .about p{margin:0;font-size:1.02rem;line-height:1.72;color:#cfd5e0}
@@ -239,8 +300,8 @@
 <header class="hero">
   <div class="halo"></div>
 
-  <div class="stage" id="stage" tabindex="0" aria-label="Dodecahedron. Drag, or use the arrow keys, to turn it.">
-    <svg id="dodsvg" viewBox="-1 -1 2 2" aria-label="Rotating regular dodecahedron" role="img">
+  <div class="stage" id="stage" tabindex="0" role="application" aria-label="Dodecahedron. Drag, or use the arrow keys, to turn it." aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight">
+    <svg id="dodsvg" viewBox="-1 -1 2 2" aria-hidden="true" focusable="false">
       <defs>
         <!-- a sun glint: warm white core fading through gold -->
         <radialGradient id="glint">
@@ -270,6 +331,7 @@
   <button class="sound" id="sound" type="button" aria-pressed="false">sound off</button>
 </header>
 
+<main>
 <section class="thesis">
   <div class="wrap">
     <p>One object runs through all of it. The regular dodecahedron, its rotation group
@@ -370,6 +432,7 @@
     </ol>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="wrap">
@@ -1059,6 +1122,16 @@
   function wake() {
     if (!raf) { last = null; raf = requestAnimationFrame(loop); }
   }
+
+  // If the preference changes while the page is open: settle under reduced motion, or start
+  // the cycle again from calm when motion is allowed.
+  function motionPreferenceChanged(e) {
+    ambient = e.matches ? 0 : (2 * Math.PI) / PERIOD;
+    if (e.matches) { spin = 0; clock = 0; }
+    wake();
+  }
+  if (reduce.addEventListener) reduce.addEventListener("change", motionPreferenceChanged);
+  else if (reduce.addListener) reduce.addListener(motionPreferenceChanged);
 
   function cap(v) { return v > HAND_CAP ? HAND_CAP : (v < -HAND_CAP ? -HAND_CAP : v); }
 
