@@ -1,7 +1,7 @@
 # m0ss.io
 
-The personal site of Eva Moss, independent researcher: the Theory of Temporal Spheres and
-dodecahedral structure across cosmology, physics, number theory and biology.
+The personal site of Eva Moss, independent researcher, systems architect and entrepreneur:
+mathematics, theoretical physics, software development and AI.
 
 Live at **[m0ss.io](https://m0ss.io)**.
 
@@ -20,7 +20,7 @@ There are no web fonts, analytics, form services or other third-party requests.
 ## Design
 
 The site is a mobile-first research page: the author's Greek signature and dodecahedron, a
-one-paragraph About, three Selected work entries, correspondence, then the complete
+short About, three Selected work entries, correspondence, then the complete
 publication archive. The section navigation uses ordinary anchors. The archive uses native
 `<details>` elements grouped by year. Every publication remains in the HTML and can be opened
 without JavaScript; supporting browsers animate the disclosure with CSS.
